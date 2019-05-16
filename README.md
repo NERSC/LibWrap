@@ -3,8 +3,14 @@
 * Automatic tracing with light overhead at scale
 * Initial goal is to trace HDF5, NetCDF, Root, POSIX, etc, any I/O related functions calls
 ## How to use
-* Install Gotcha first, export the path
+* Install Gotcha first, export the path, thanks Elsa Gonsiorowski @llnl 
 ```
+git clone https://github.com/llnl/gotcha
+cd gotcha
+mkdir build install
+cd build
+cmake ../ -DCMAKE_INSTALL_PREFIX=../install
+make
 export GOTCHA=path_gotcha_install
 ```
 * Install HDF5 tracer
