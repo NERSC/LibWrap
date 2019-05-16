@@ -5,4 +5,4 @@
 
 ## [Gotcha](https://gotcha.readthedocs.io/en/latest/#) is an API that provides function wrapping.
 
-## Check also, [Gotcha-Tracer](https://github.com/llnl/GOTCHA-tracer) is a Python tool for creating tracer with Gotcha
+## [Gotcha-Tracer](https://github.com/llnl/GOTCHA-tracer) is a Python tool for creating tracer with Gotcha
