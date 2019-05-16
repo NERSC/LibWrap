@@ -1,6 +1,6 @@
 TARGET = lgotchah5.so 
 LIBS = -lgotcha
-GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
+#GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
 CC = LD_LIBRARY_PATH=$(GOTCHA)/lib64 cc
 CFLAGS = -fPIC -I$(GOTCHA)/include -L/$(GOTCHA)/lib64
 

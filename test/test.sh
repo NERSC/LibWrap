@@ -14,13 +14,13 @@ echo "============"
 ./h5_rdwt
 echo "Done"
 echo "============"
-GOTCHAH5=/global/homes/j/jialin/gotcha/gotcha_hdf5/lgotchah5.so
-GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install/lib64/libgotcha.so
-if test -f "$GOTCHA"; then
+GOTCHAH5=../lgotchah5.so
+GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
+if test -f "$GOTCHALIB"; then
  echo "Testing HDF5 apps with GOTCHA"
  echo "============"
- LD_PRELOAD=$GOTCHAH5:$GOTCHA ./h5_crtdat
- LD_PRELOAD=$GOTCHAH5:$GOTCHA ./h5_rdwt
+ LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./h5_crtdat
+ LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./h5_rdwt
  echo "============"
  echo "Done"
 fi
