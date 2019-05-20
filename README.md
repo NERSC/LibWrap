@@ -11,10 +11,12 @@ mkdir build install
 cd build
 cmake ../ -DCMAKE_INSTALL_PREFIX=../install
 make
+make install
 export GOTCHA=path_gotcha_install
 ```
 * Install HDF5 tracer
 ```
+module load cray-hdf5
 make 
 ```
 * Test HDF5 apps
