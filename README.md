@@ -13,7 +13,7 @@ cmake ../ -DCMAKE_INSTALL_PREFIX=../install
 make
 export GOTCHA=path_gotcha_install
 ```
-* Install HDF5 tracer
+* Install HDF5 tracers
 ```
 make 
 ```

@@ -8,12 +8,19 @@
 typedef hid_t (*H5Fcreate_fptr)(const char * name, unsigned flags, hid_t fcpl_id, hid_t fapl_id);
 typedef hid_t (*H5Fopen_fptr)(const char *name, unsigned flags, hid_t fapl_id);
 typedef hid_t (*H5Fclose_fptr)(hid_t file_id);
+typedef hid_t (*H5Fmount_fptr)(hid_t loc_id, const char *name, hid_t child_id, hid_t fmpl_id);
 
 static gotcha_wrappee_handle_t H5Fcreate_handle;
 static gotcha_wrappee_handle_t H5Fopen_handle;
 static gotcha_wrappee_handle_t H5Fclose_handle;
+static gotcha_wrappee_handle_t H5Fmount_handle;
 
-
+static hid_t H5Fmount_wrapper(hid_t loc_id, const char *name, hid_t child_id, hid_t fmpl_id) {
+  H5Fmount_fptr H5Fmount_wrappee = (H5Fmount_fptr) gotcha_get_wrappee(H5Fmount_handle);
+  hid_t result = H5Fmount_wrappee(loc_id,name,child_id,fmpl_id);
+  fprintf(stderr, "H5Fmount(%0llx, %s, %0llx, %0llx) = %0llx\n",loc_id,name,child_id,fmpl_id, result);
+  return result;
+}
 
 static hid_t H5Fcreate_wrapper(const char * name, unsigned flags, hid_t fcpl_id, hid_t fapl_id) {
   H5Fcreate_fptr H5Fcreate_wrappee = (H5Fcreate_fptr) gotcha_get_wrappee(H5Fcreate_handle);
@@ -43,10 +50,11 @@ static hid_t H5Fclose_wrapper(hid_t file_id) {
 static gotcha_binding_t h5_file_func_bindings[]={
    {"H5Fcreate", H5Fcreate_wrapper, &H5Fcreate_handle},
    {"H5Fopen", H5Fopen_wrapper, &H5Fopen_handle},
-   {"H5Fclose", H5Fclose_wrapper, &H5Fclose_handle}
+   {"H5Fclose", H5Fclose_wrapper, &H5Fclose_handle},
+   {"H5Fmount", H5Fmount_wrapper, &H5Fmount_handle}
 };
 void init_gotcha_h5_file_func(){
- gotcha_wrap(h5_file_func_bindings, 3, "h5gotcha");
+ gotcha_wrap(h5_file_func_bindings, 4, "h5gotcha");
 }
 
 
