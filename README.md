@@ -11,16 +11,28 @@ mkdir build install
 cd build
 cmake ../ -DCMAKE_INSTALL_PREFIX=../install
 make
+make install
 export GOTCHA=path_gotcha_install
 ```
-* Install HDF5 tracers
+* Install HDF5 tracer
 ```
+git clone https://github.com/NERSC/gotcha-io.git
+cd gotcha-io
+module load cray-hdf5
 make 
 ```
+
+* Load compiler:
+```
+module load PrgEnv-intel  #for loading Intel compiler #unload other first. Example: module unload PrgEnv-compiler
+module swap PrgEnv-intel PrgEnv-cray #for swapping to Cray compiler
+module swap PrgEnv-intel PrgEnv-gnu #for swapping to GNU compiler
+```
+
 * Test HDF5 apps
 ```
 cd test
-source test
+source test #issue: if source does not work, try bash
 ```
 ## [Gotcha](https://gotcha.readthedocs.io/en/latest/#) is an API that provides function wrapping.
 
