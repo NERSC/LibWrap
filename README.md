@@ -13,10 +13,11 @@ cmake ../ -DCMAKE_INSTALL_PREFIX=../install
 make
 make install
 export GOTCHA=path_gotcha_install
+cd ../..
 ```
+
 * Install HDF5 tracer
 ```
-cd ../..
 git clone https://github.com/NERSC/gotcha-io.git
 cd gotcha-io
 module load cray-hdf5
