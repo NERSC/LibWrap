@@ -16,6 +16,7 @@ export GOTCHA=path_gotcha_install
 ```
 * Install HDF5 tracer
 ```
+cd ../..
 git clone https://github.com/NERSC/gotcha-io.git
 cd gotcha-io
 module load cray-hdf5
