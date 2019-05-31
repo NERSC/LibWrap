@@ -2,7 +2,7 @@
 module load cray-hdf5
 
 
-export CRAYPE_LINK_TYPE=static
+export CRAYPE_LINK_TYPE=dynamic
 echo "============"
 echo "Compiling HDF5 apps"
 echo "============"
