@@ -21,8 +21,8 @@ echo "============"
 echo "Done"
 echo "============"
 
-GOTCHAH5=../lgotchah5.a
-GOTCHALIB=${GOTCHA}/lib64/libgotcha.a
+GOTCHAH5=../lgotchah5.so
+GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 if test -f "$GOTCHALIB"; then
  echo "Testing HDF5 apps with GOTCHA"
  echo "============"
