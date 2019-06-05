@@ -1,4 +1,4 @@
-TARGET = lgotchah5.a
+TARGET = lgotchah5.so
 LIBS = -lgotcha
 #GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
 CC = LD_LIBRARY_PATH=$(GOTCHA)/lib cc
