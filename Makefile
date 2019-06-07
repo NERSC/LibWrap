@@ -1,8 +1,8 @@
-TARGET = lgotchah5.so
+TARGET = lgotchah5.so 
 LIBS = -lgotcha
 #GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
-CC = LD_LIBRARY_PATH=$(GOTCHA)/lib cc
-CFLAGS = -fPIC -I$(GOTCHA)/include -L/$(GOTCHA)/lib
+CC = LD_LIBRARY_PATH=$(GOTCHA)/lib64 cc
+CFLAGS = -fPIC -I$(GOTCHA)/include -L/$(GOTCHA)/lib64
 
 .PHONY: default all clean
 
@@ -23,3 +23,4 @@ $(TARGET): $(OBJECTS)
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
+
