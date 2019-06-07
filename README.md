@@ -10,7 +10,7 @@ module swap PrgEnv-intel PrgEnv-cray #for swapping to Cray compiler
 module swap PrgEnv-intel PrgEnv-gnu #for swapping to GNU compiler
 ```
 
-* Install Gotcha first, export the path, thanks Elsa Gonsiorowski @llnl 
+* Install Gotcha, export the path, thanks Elsa Gonsiorowski @llnl 
 ```
 git clone https://github.com/llnl/gotcha
 cd gotcha
@@ -35,7 +35,7 @@ make
 * Test HDF5 apps (Test with the compiler that gotcha uses) 
 ```
 cd test
-source test #issue: if source does not work, try bash
+source test.sh #issue: if source does not work, try bash
 ```
 ## [Gotcha](https://gotcha.readthedocs.io/en/latest/#) is an API that provides function wrapping.
 
