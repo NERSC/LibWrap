@@ -1,0 +1,47 @@
+
+#setenv("PKG_CONFIG_PATH","/global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/pkg-check")
+#setenv("CFLAGS","`pkg-config --cflags --libs wrapper`")
+#pushenv("CC","cc")
+#pushenv("CFLAGS","`pkg-config --cflags --libs wrapper`")
+
+#set 	CFLAGS		"`pkg-config --cflags --libs wrapper`"
+
+
+#exec "export" $CFLAGS
+
+#if { [ info exists env(CFLAGS) ] } {
+#       set CFLAGS $env(CFLAGS)
+#} else {
+#       set CFLAGS "`pkg-config --cflags --libs wrapper`"
+#}
+#set CFLAGS "`pkg-config --cflags --libs wrapper`"
+#if [ module-info mode load ] {
+#	exec "export" $CFLAGS
+#	exec puts stderr "module is set"
+#}
+
+set 	name 	swrap
+set	description	"a wrapper tool"
+setenv testpath "testpath"
+add_property("state","experimental")
+
+proc ModulesHelp { } {
+  global description nerscurl externalurl
+  puts stderr "Description - "
+  puts stderr "NERSC Docs  - "
+  puts stderr "Other Docs  - "
+}
+
+#module-whatis                   "$description"
+
+set PREFIX /global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/pkg-check
+
+prepend-path PKG_CONFIG_PATH $PREFIX 
+
+prepend-path PE_PKGCONFIG_LIBS wrapper
+
+prepend-path hooray "thisishooray" 
+
+#if (mode() == "load") then
+#  setenv("testpath","testpath")
+#end
