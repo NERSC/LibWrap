@@ -14,4 +14,4 @@ module swap cray-hdf5 cray-hdf5-parallel
 GOTCHAH5=../lgotchah5.so
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 export LD_PRELOAD=$GOTCHAH5:$GOTCHALIB
-srun ./h5p_crtdat
+srun ./ph5example
