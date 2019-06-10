@@ -20,6 +20,8 @@
 #include "mpi.h"
 #define FILE "p_dset.h5"
 
+
+//TODO create with only one rank 
 int main() {
 
    hid_t       file_id, dataset_id, dataspace_id, plist_id;  /* identifiers */
