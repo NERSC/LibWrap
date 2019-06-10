@@ -1,0 +1,34 @@
+#%Module
+set     name        swrap
+set     version     0.0.1
+set     root        /usr/common/software/$name/$version
+
+set     fullname    swrap
+set     externalurl https://github.com/NERSC/gotcha-io
+set     nerscurl    https://www.nersc.gov
+set     maincategory    applications
+set     subcategory "programming"
+set     description "wrapper using gnu linker"
+
+proc ModulesHelp { } {
+      global description nerscurl externalurl
+      puts stderr "Description - $description"
+      puts stderr "NERSC Docs  - $nerscurl"
+      puts stderr "Other Docs  - $externalurl"
+}
+
+set PREFIX /global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/pkg-check
+#prepend-path PKG_CONFIG_PATH $PREFIX
+#prepend-path PE_PKGCONFIG_LIBS wrapper
+
+if {$CRAYPE_LINK_TYPE == "Dynamic"} {
+
+	prepend-path PKG_CONFIG_PATH $PREFIX/dynamic
+	prepend-path PE_PKGCONFIG_LIBS gotchah5
+	setenv LD_PRELOAD $PREFIX/mywrapper/libgotchah5.so:$PREFIX/mywrapper/libgotcha.so
+
+} else {
+
+	prepend-path PKG_CONFIG_PATH $PREFIX
+	prepend-path PE_PKGCONFIG_LIBS wrapper
+}
