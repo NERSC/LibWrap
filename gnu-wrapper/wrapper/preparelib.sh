@@ -1,2 +1,2 @@
-cc wrapper.c -o wrappe.o
+cc -c wrapper.c -o wrappe.o
 ar rcs libwrapper.a wrappe.o
