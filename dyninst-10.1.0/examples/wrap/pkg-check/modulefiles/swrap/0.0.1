@@ -21,13 +21,13 @@ set PREFIX /global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/pkg-check
 #prepend-path PKG_CONFIG_PATH $PREFIX
 #prepend-path PE_PKGCONFIG_LIBS wrapper
 
-if { [ info exists env(CRAYPE_LINK_TYPE) ] } {
+#if { [ info exists env(CRAYPE_LINK_TYPE) ] } {
 
 	#Do-nothing
-}
-else {
-	setenv  CRAYPE_LINK_TYPE  Static
-}
+#}
+#else {
+#	setenv  CRAYPE_LINK_TYPE  Static
+#}
 
 
 if {$env(CRAYPE_LINK_TYPE) == "Dynamic"} {
