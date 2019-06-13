@@ -23,21 +23,15 @@ set PREFIX /global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/pkg-check
 
 #if { [ info exists env(CRAYPE_LINK_TYPE) ] } {
 
-	#Do-nothing
-#}
-#else {
-#	set  CRAYPE_LINK_TYPE  static
-#}
 
-
-if {$env(CRAYPE_LINK_TYPE) == "dynamic"} {
-
-	prepend-path PKG_CONFIG_PATH $PREFIX/dynamic
-	prepend-path PE_PKGCONFIG_LIBS gotchah5
-	prepend-path LD_PRELOAD $PREFIX/mywrapper/libgotchah5.so:$PREFIX/mywrapper/libgotcha.so
-
+if { [ info exists CRAYPE_LINK_TYPE ] } {
+    if {$env(CRAYPE_LINK_TYPE) == "dynamic"}{
+        prepend-path PKG_CONFIG_PATH $PREFIX/dynamic
+        prepend-path PE_PKGCONFIG_LIBS gotchah5
+        prepend-path LD_PRELOAD $PREFIX/mywrapper/libgotchah5.so:$PREFIX/mywrapper/libgotcha.so
+        }
 } else {
-
-	prepend-path PKG_CONFIG_PATH $PREFIX
-	prepend-path PE_PKGCONFIG_LIBS wrapper
+    prepend-path PKG_CONFIG_PATH $PREFIX
+    prepend-path PE_PKGCONFIG_LIBS wrapper
 }
+
