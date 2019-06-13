@@ -2,6 +2,11 @@
 
 * Prepare the pkg-config file first. Pkg-config file must contain the following information:
 ```
+source set-wrap.sh # helps you to prepare all shared and static wrapper libraries
+```
+
+* Prepare the pkg-config file first. Pkg-config file must contain the following information:
+```
 Pkg-config path (i.e., prefix)
 Wrapper library path (i.e., wrapper_libdir, see example below)
 Linking information (i.e., Libs)
