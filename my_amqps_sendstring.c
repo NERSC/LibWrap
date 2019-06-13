@@ -48,7 +48,8 @@
 #include <unistd.h>
 
 #include "utils.h"
-#include "main.h"
+#include "log.h"
+
 
 int create_count, open_count;
 struct log_info job_log;

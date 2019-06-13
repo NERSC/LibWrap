@@ -8,6 +8,4 @@
 
 #include "utils.h"
 
-extern int open_count, create_count, close_count, dread_count;
-extern struct log_info job_log;
 void send_to_mods();
