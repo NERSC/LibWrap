@@ -31,12 +31,18 @@ cd $prefix
 #export LD_PRELOAD=$prefix/all_wrap/libgotchah5.so:$GOTCHA/lib64/libgotcha.so
 cp $GOTCHA/lib64/libgotcha.so all_wrap/
 
+###This cloning is from temporary repository for static-wrapper###
+mkdir static-wrapper2
+cd static-wrapper2
+git clone -b dev-static-lib-wrapper --single-branch https://github.com/NERSC/gotcha-io.git
+cd gotcha-io/gnu-wrapper/wrapper
+
 #git clone static wrapper
-cd static-wrapper
+#cd static-wrapper ### This will be used when github will have the repository for final static-wrapper
 
 cc -c wrappe.c -o wrappe.o
 ar rcs libwrapper.a wrappe.o
-cp libwrapper.a ../all_wrap/
+cp libwrapper.a ../../../../all_wrap/
 
 
  
