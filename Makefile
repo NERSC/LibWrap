@@ -1,8 +1,7 @@
 TARGET = lgotchah5.so 
-#JANSSON = $(HOME)/projectcode/jansson-2.12
+#JANSSON=$(HOME)/projectcode/jansson-2.12
 #GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
 Rabbitmq_PATH = /usr/common/software/rabbitmq/0.9.0
-
 CC = cc
 CFLAGS = -fPIC 
 

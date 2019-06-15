@@ -8,4 +8,26 @@
 
 #include "utils.h"
 
+struct log_info{
+  char* host;
+  char* user;
+  char* hostname;
+  char* slurm_job_id;
+  char* slurm_job_num_nodes;
+  char* slurm_job_account;
+  char* nodetype;
+  char* first_hdf5api_time;
+  int is_compute;
+  int ismpi;
+  int uid;
+};
+
+struct api_counts{
+  int open_count;
+  int create_count;
+  int close_count;
+  int dread_count;
+  int dwrite_count;
+};
+
 void send_to_mods();

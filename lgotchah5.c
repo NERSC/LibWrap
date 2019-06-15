@@ -34,7 +34,7 @@ int dwrite_count = 0;
 double tot_time = 0; 
 
 
-static void printtime()
+static void printoverhead()
 {
   fprintf(stderr, "Total overhead gotcha time %f sec\n", tot_time);
   return ;
@@ -51,7 +51,7 @@ static hid_t H5Fcreate_wrapper(const char * name, unsigned flags, hid_t fcpl_id,
   hid_t result = H5Fcreate_wrappee(name, flags, fcpl_id, fapl_id);
   t = clock();
   //create_count++;
-  do_log(name, fapl_id, result, "create");
+  H5Fcreate_log(name, flags, fcpl_id, fapl_id);
   t = clock()-t;
   tot_time += ((double)t)/CLOCKS_PER_SEC;
   return result;
@@ -67,7 +67,7 @@ static hid_t H5Fopen_wrapper(const char *name, unsigned flags, hid_t fapl_id)
   hid_t result = H5Fopen_wrappee(name, flags, fapl_id);
   t = clock();
   //open_count++;
-  do_log(name, fapl_id, result, "open");
+  H5Fopen_log(name, flags, fapl_id);
   t = clock()-t;
   tot_time += ((double)t)/CLOCKS_PER_SEC; 
   return result;
@@ -85,7 +85,7 @@ static hid_t H5Fclose_wrapper(hid_t file_id)
   //        file_id,result);
   t = clock();
   //close_count++;
-  wrt_log(result, "close", 0);
+  //wrt_log(result, "close", 0);
   t = clock()-t;
   tot_time += ((double)t)/CLOCKS_PER_SEC;
   return result;
@@ -99,7 +99,7 @@ static herr_t H5Dread_wrapper(void *dset, hid_t mem_type_id, hid_t mem_space_id,
   herr_t ret_val = H5Dread_wrappee(dset, mem_type_id, mem_space_id, file_space_id, 
 							plist_id, buf );
   //dread_count++;
-  do_log(NULL, NULL, ret_val, "DRead");
+  //do_log(NULL, NULL, ret_val, "DRead");
   return ret_val;
 }
 
@@ -111,7 +111,7 @@ static herr_t H5Dwrite_wrapper(void *dset, hid_t mem_type_id, hid_t mem_space_id
   herr_t ret_val = H5Dwrite_wrappee(dset, mem_type_id, mem_space_id, file_space_id,
 							plist_id, buf);
   //dwrite_count++;
-  do_log(NULL, NULL, ret_val, "DWrite");
+  //do_log(NULL, NULL, ret_val, "DWrite");
   return ret_val;
 }
 

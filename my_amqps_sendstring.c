@@ -37,25 +37,13 @@
  * ***** END LICENSE BLOCK *****
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <stdint.h>
-#include <amqp_ssl_socket.h>
-#include <amqp_framing.h>
-#include <jansson.h>
-#include <unistd.h>
-
-#include "utils.h"
-#include "log.h"
+#include "my_amqps_sendstring.h"
 
 
-int create_count, open_count;
 struct log_info job_log;
-//char* host;
-//void send_to_mods(const char * file_operation, const int ismpi, const char *loctime,
-// 				const int uid, struct log_info job_log, const int count)
+struct api_counts glo_parallel_api_counts, serial_api_counts;
+
+
 void send_to_mods()
 {
   char const *hostname;
@@ -70,6 +58,7 @@ void send_to_mods()
   char const *message_text;
   json_t *json_test;
   json_error_t json_error;
+  
   hostname = "rabbit.nersc.gov";
   //  hostname = "fail-rabbit.nersc.gov";
   port = 5671;
@@ -80,22 +69,26 @@ void send_to_mods()
   creds = "3uNne@^z";
    
   json_t *root = json_object();
+  
   json_object_set_new( root, "category", json_string("MODS") );
   json_object_set_new( root, "name", json_string("gotchaio-tracer") );
   json_object_set_new( root, "uid", json_integer(job_log.uid) );
   json_object_set_new(root, "ismpi", json_integer(job_log.ismpi));
   json_object_set_new(root, "first HDF5 API time", json_string(job_log.first_hdf5api_time));
   json_object_set_new(root, "nersc host", json_string(job_log.host));
+  json_object_set_new(root, "hostname", json_string(job_log.hostname));
   json_object_set_new(root, "user", json_string(job_log.user));
   json_object_set_new(root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
   json_object_set_new(root, "slurm job account", json_string(job_log.slurm_job_account));
   json_object_set_new(root, "nodetype", json_string(job_log.nodetype));
-  //json_object_set_new(root, "is_compute", json_integer(job_log.is_compute));
-  json_object_set_new(root, "count create", json_integer(create_count));
-  json_object_set_new(root, "count open", json_integer(open_count));
+  json_object_set_new(root, "ismpi", json_integer(job_log.ismpi));
+  json_object_set_new(root, "serial open count", json_integer(serial_api_counts.open_count));
+  json_object_set_new(root, "serial create count", json_integer(serial_api_counts.create_count));
+  json_object_set_new(root, "parallel open count", json_integer(glo_parallel_api_counts.open_count));
+  json_object_set_new(root, "parallel create count", json_integer(glo_parallel_api_counts.create_count));
   
   messagebody = json_dumps(root, 0);
-  //printf("messagebody %s\n",messagebody);
+  //fprintf(stderr, "messagebody %s\n",messagebody);
   json_test = json_loads(messagebody, 0, &json_error);
   if(!json_test)
     {
@@ -106,7 +99,7 @@ void send_to_mods()
 
 
   messagebody = json_dumps(json_test,JSON_ENSURE_ASCII|JSON_ESCAPE_SLASH);
-  // printf("json_dumps %s\n",messagebody);
+  //fprintf(stderr,"json_dumps %s\n",messagebody);
 
   conn = amqp_new_connection();
 
