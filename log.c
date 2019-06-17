@@ -2,14 +2,22 @@
 
 struct log_info job_log; 
 struct api_counts loc_parallel_api_counts, serial_api_counts, glo_parallel_api_counts;
+
 static int tot_serial_api_count = 0;
 static int tot_parallel_api_count = 0;
 
-int world_size = -1;
-int world_rank = -1;
+//TODO: int might overflow
+loc_parallel_read_data = 0;
+serial_read_data = 0;
+loc_parallel_write_data = 0;
+serial_write_data = 0;
+glo_parallel_read_data = 0;
+glo_parallel_write_data = 0;
 
-MPI_Comm mpi_comm = MPI_COMM_NULL;
-MPI_Info mpi_info = MPI_COMM_NULL;
+
+//To add attribute to MPI comm for cb
+int key_val;
+
 
 hbool_t is_mpi(hid_t fapl_id)
 {
@@ -21,6 +29,24 @@ hbool_t is_mpi(hid_t fapl_id)
   }
   else if((driver_id = H5Pget_driver(fapl_id)) > 0 && driver_id == H5FD_MPIO){
     have_mpi = true;
+  }
+  return have_mpi;
+}
+
+
+hbool_t is_mpi_D(hid_t plist_id)
+{
+  hbool_t have_mpi = false;
+  H5FD_mpio_xfer_t xfer_mode = H5FD_MPIO_INDEPENDENT;
+  if (plist_id == H5P_DEFAULT){
+    have_mpi = false;
+  }
+  else{
+    H5Pget_dxpl_mpio(plist_id, &xfer_mode);
+    if(xfer_mode == H5FD_MPIO_INDEPENDENT)
+      have_mpi = false;
+    else 
+      have_mpi = true;
   }
   return have_mpi;
 }
@@ -90,27 +116,35 @@ void reset_api_counts(struct api_counts my_api_counts)
 
 static int mpi_send_mods_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag)
 {
-  fprintf(stderr, "Local sum for process %d - %d\n",
-       world_rank, loc_parallel_api_counts.open_count);
+  //fprintf(stderr, "Local sum for process %d - %d\n",
+  //     world_rank, loc_parallel_api_counts.open_count);
   // Reduce all of the local sums into the global sum
   MPI_Reduce(&loc_parallel_api_counts.open_count, &glo_parallel_api_counts.open_count, 
-					1, MPI_INT, MPI_SUM, 0, mpi_comm);
+					1, MPI_INT, MPI_SUM, 0, comm);
+  MPI_Reduce(&loc_parallel_api_counts.dread_count, &glo_parallel_api_counts.dread_count, 
+					1, MPI_INT, MPI_SUM, 0, comm);
+  MPI_Reduce(&loc_parallel_api_counts.dwrite_count, &glo_parallel_api_counts.dwrite_count, 
+					1, MPI_INT, MPI_SUM, 0, comm);
+  MPI_Reduce(&loc_parallel_read_data, &glo_parallel_read_data, 1, MPI_INT, MPI_SUM, 
+							    0, comm);
+  MPI_Reduce(&loc_parallel_write_data, &glo_parallel_write_data, 1, MPI_INT, MPI_SUM, 
+							    0, comm);
   
+  int world_rank;
+  MPI_Comm_rank(comm, &world_rank);
   if(world_rank==0){
     send_to_mods();
-    fprintf(stderr, "Global sum for process %d - %d\n",
-       world_rank, glo_parallel_api_counts.open_count);
+    //fprintf(stderr, "Global sum for process %d - %d\n",
+    //   world_rank, glo_parallel_api_counts.open_count);
   }
   
-  // Destroy all MPI information
-  world_rank = -1;
-  world_size = -1;
-  /*
-  mpi_comm = MPI_COMM_NULL;
-  mpi_info = MPI_COMM_NULL;
-  */
   // Reset all counts
   tot_parallel_api_count = 0;
+  glo_parallel_read_data = 0;
+  glo_parallel_write_data = 0;
+  loc_parallel_read_data = 0;
+  loc_parallel_write_data = 0;
+
   reset_api_counts(loc_parallel_api_counts);
   reset_api_counts(glo_parallel_api_counts); 
   // Reset log information
@@ -139,10 +173,9 @@ void mpi_atexit()
   MPI_Initialized(&mpi_initialized);
   MPI_Finalized(&mpi_finalized);
    
-  /* add an attribute on MPI_COMM_SELF to call send_to_mods()
+  /* add an attribute on MPI_COMM_WORLD to call send_to_mods()
      when it is destroyed, i.e. on MPI_Finalize */
   if (mpi_initialized && !mpi_finalized) {
-      int key_val;
       if(MPI_SUCCESS != (mpi_code = MPI_Comm_create_keyval(MPI_COMM_NULL_COPY_FN, 
   					(MPI_Comm_delete_attr_function *)mpi_send_mods_cb, 
 									&key_val, NULL))){
@@ -150,7 +183,7 @@ void mpi_atexit()
         fprintf(stderr, "MPI_Comm_create_keyval failed");
         return ;
       }
-      if(MPI_SUCCESS != (mpi_code = MPI_Comm_set_attr(MPI_COMM_SELF, key_val, NULL))){
+      if(MPI_SUCCESS != (mpi_code = MPI_Comm_set_attr(MPI_COMM_WORLD, key_val, NULL))){
   	//HMPI_GOTO_ERROR(FAIL, "MPI_Comm_set_attr failed", mpi_code)
         fprintf(stderr, "MPI_Comm_set_attr failed");
         return ;
@@ -167,12 +200,16 @@ void mpi_atexit()
 
 void mpi_extrct_log_info(hid_t fapl_id)
 {
+  
+  MPI_Comm mpi_comm = MPI_COMM_NULL;
+  MPI_Info mpi_info = MPI_COMM_NULL;
+  int world_rank;
   //MPI_Comm_size(mpi_comm, &world_size);
   H5Pget_fapl_mpio(fapl_id, &mpi_comm, &mpi_info);
   //printf("%s:%u - <message>\n",__func__, __LINE__);
   MPI_Comm_rank(mpi_comm, &world_rank);
   
-  // Write from only one rank per communicator
+  // write from only one rank per communicator
   if (world_rank == 0)
     extrct_log_info(1);
   return ;
@@ -181,12 +218,12 @@ void mpi_extrct_log_info(hid_t fapl_id)
 
 void mpi_log(hid_t fapl_id)
 {
-  //printf("%s:%u - <message>\n",__func__, __LINE__);
+  fprintf(stderr, "%s:%u - <message>\n",__func__, __LINE__);
   if (tot_parallel_api_count == 0){
     mpi_extrct_log_info(fapl_id);
-    //printf("%s:%u - <message>\n",__func__, __LINE__);
+    fprintf(stderr, "%s:%u - <message>\n",__func__, __LINE__);
     mpi_atexit();
-    //printf("%s:%u - <message>\n",__func__, __LINE__);
+    fprintf(stderr, "%s:%u - <message>\n",__func__, __LINE__);
   }
   tot_parallel_api_count++;
   return ;
@@ -197,11 +234,23 @@ void serial_log()
 {
   if (tot_serial_api_count == 0){
     extrct_log_info(0);
-    printf("%s:%u - <message>\n",__func__, __LINE__);
+    //printf("%s:%u - <message>\n",__func__, __LINE__);
     atexit(send_to_mods);
   }
   tot_serial_api_count++;
   return ;
+}
+
+
+hsize_t get_dataset_size(void* dset, hid_t mem_type_id, hid_t mem_space_id)
+{
+  hsize_t r_size;
+  hid_t space_id = H5Dget_space((hid_t)dset);  
+  if(H5S_ALL == mem_space_id)
+    r_size = H5Tget_size(mem_type_id) * (hsize_t)H5Sget_simple_extent_npoints(space_id);
+  else
+    r_size = H5Tget_size(mem_type_id) * (hsize_t)H5Sget_select_npoints(mem_space_id); 
+  return r_size; 
 }
 
 //TODO: H5get_fapl_mpio does not work
@@ -222,7 +271,6 @@ void H5Fcreate_log(const char *name, unsigned flags, hid_t fcpl_id, hid_t fapl_i
 
 void H5Fopen_log(const char *name, unsigned flags, hid_t fapl_id)
 {
-  //printf("%s:%u - <message>\n",__func__, __LINE__);
   if (is_mpi(fapl_id)){
     mpi_log(fapl_id);
     loc_parallel_api_counts.open_count++;
@@ -233,3 +281,37 @@ void H5Fopen_log(const char *name, unsigned flags, hid_t fapl_id)
   } 
   return ;
 }
+
+
+void H5Dread_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
+		hid_t file_space_id, hid_t plist_id, void *buf)
+{
+  hsize_t dread_size = get_dataset_size(dset, mem_type_id, mem_space_id);
+  if (is_mpi_D(plist_id)){
+    tot_parallel_api_count++;
+    loc_parallel_api_counts.dread_count++;
+    loc_parallel_read_data += dread_size;
+  }
+  else{
+    tot_serial_api_count++;
+    serial_api_counts.dread_count++;
+    serial_read_data += dread_size;
+  }
+  return ;
+}
+
+
+void H5Dwrite_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
+		hid_t file_space_id, hid_t plist_id, void *buf)
+{
+  /*if (is_mpi_D(plist_id)){
+    tot_parallel_api_count++;
+    loc_parallel_api_counts.dread_count++;
+  }
+  else{
+    tot_serial_api_count++;
+    serial_api_counts.dread_count++;
+  }*/
+  return ;
+}
+

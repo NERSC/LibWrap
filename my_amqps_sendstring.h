@@ -8,6 +8,9 @@
 
 #include "utils.h"
 
+extern int glo_parallel_read_data, glo_parallel_write_data, 
+           serial_read_data, serial_write_data;
+
 struct log_info{
   char* host;
   char* user;

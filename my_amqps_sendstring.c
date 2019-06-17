@@ -42,7 +42,8 @@
 
 struct log_info job_log;
 struct api_counts glo_parallel_api_counts, serial_api_counts;
-
+int glo_parallel_read_data, glo_parallel_write_data, serial_read_data, 
+	serial_write_data;
 
 void send_to_mods()
 {
@@ -84,8 +85,16 @@ void send_to_mods()
   json_object_set_new(root, "ismpi", json_integer(job_log.ismpi));
   json_object_set_new(root, "serial open count", json_integer(serial_api_counts.open_count));
   json_object_set_new(root, "serial create count", json_integer(serial_api_counts.create_count));
+  json_object_set_new(root, "serial dread count", json_integer(serial_api_counts.dread_count));
+  json_object_set_new(root, "serial dwrite count", json_integer(serial_api_counts.dwrite_count));
   json_object_set_new(root, "parallel open count", json_integer(glo_parallel_api_counts.open_count));
   json_object_set_new(root, "parallel create count", json_integer(glo_parallel_api_counts.create_count));
+  json_object_set_new(root, "parallel dread count", json_integer(glo_parallel_api_counts.dread_count));
+  json_object_set_new(root, "parallel dwrite count", json_integer(glo_parallel_api_counts.dwrite_count));
+  json_object_set_new(root, "total parallel dataset write", json_integer(glo_parallel_write_data));
+  json_object_set_new(root, "total parallel dataset read", json_integer(glo_parallel_read_data));
+  json_object_set_new(root, "total serial dataset write", json_integer(serial_write_data));
+  json_object_set_new(root, "total serial dataset read", json_integer(serial_read_data));
   
   messagebody = json_dumps(root, 0);
   //fprintf(stderr, "messagebody %s\n",messagebody);
@@ -111,7 +120,7 @@ void send_to_mods()
   }
 
   struct timeval consume_timeout;
-  consume_timeout.tv_sec = 5;
+  consume_timeout.tv_sec = 1;
   consume_timeout.tv_usec = 0;
 
   amqp_ssl_socket_set_verify_peer(socket, 0);

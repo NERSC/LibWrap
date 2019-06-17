@@ -10,7 +10,6 @@
 
 #include "my_amqps_sendstring.h"
 
-extern int open_count, create_count, close_count, dread_count;
 extern struct log_info job_log;
 extern struct api_counts serial_api_counts;
 extern struct api_counts parallel_api_counts;
@@ -21,4 +20,3 @@ void H5Fclose_log();
 void H5Dread_log();
 void H5Dwrite_log();
 
-void extrct_log_info(const int ismpi);
