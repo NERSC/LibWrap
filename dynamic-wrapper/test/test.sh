@@ -2,25 +2,28 @@
 module load cray-hdf5
 export CRAYPE_LINK_TYPE=dynamic
 echo "============"
-echo "Compiling HDF5 apps"
+echo "Compiling apps"
 echo "============"
-cc -o h5_crtdat h5_crtdat.c
-cc -o h5_rdwt h5_rdwt.c
+#cc -o h5_crtdat h5_crtdat.c
+cc -o linux linux.c
+
 echo "Done"
 echo "============"
-echo "Testing HDF5 apps without GOTCHA"
+echo "Testing apps without GOTCHA"
 echo "============"
+./linux
 ./h5_crtdat
-./h5_rdwt
+
 echo "Done"
 echo "============"
-GOTCHAH5=../lgotchah5.so
+export GOTCHA=/global/homes/a/aalmamun/gotcha/install
+GOTCHAH5=../libgotchah5.so
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 if test -f "$GOTCHALIB"; then
- echo "Testing HDF5 apps with GOTCHA"
+ echo "Testing apps with GOTCHA"
  echo "============"
+ LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./linux
  LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./h5_crtdat
- LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./h5_rdwt
  echo "============"
  echo "Done"
 fi
