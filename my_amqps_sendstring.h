@@ -26,9 +26,9 @@ struct log_info{
 };
 
 struct api_counts{
-  int open_count;
-  int create_count;
-  int close_count;
+  int fopen_count;
+  int fcreate_count;
+  int fclose_count;
   int dread_count;
   int dwrite_count;
 };

@@ -25,15 +25,10 @@ static gotcha_wrappee_handle_t H5Fopen_handle;
 static gotcha_wrappee_handle_t H5Fclose_handle;
 static gotcha_wrappee_handle_t H5Dread_handle;
 static gotcha_wrappee_handle_t H5Dwrite_handle;
-/*
-int read_count = 0;
-int create_count = 0;
-int close_count = 0;
-int dread_count = 0;
-int dwrite_count = 0;
-*/
+
 double tot_log_overhead = 0; 
 pthread_mutex_t log_mutex;
+
 
 static void printoverhead()
 {

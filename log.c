@@ -6,7 +6,7 @@ struct api_counts loc_parallel_api_counts, serial_api_counts, glo_parallel_api_c
 static int tot_serial_api_count = 0;
 static int tot_parallel_api_count = 0;
 
-//TODO: int might overflow
+// CR note: int might overflow
 loc_parallel_read_data = 0;
 serial_read_data = 0;
 loc_parallel_write_data = 0;
@@ -15,7 +15,7 @@ glo_parallel_read_data = 0;
 glo_parallel_write_data = 0;
 
 
-//To add attribute to MPI comm for cb
+// To add attribute to MPI comm for cb
 int key_val;
 
 
@@ -64,12 +64,17 @@ void extrct_log_info(const int ismpi)
   job_log.first_hdf5api_time = asctime(info); 
   job_log.host = getenv("NERSC_HOST");
   job_log.user = getenv("USER");
-  job_log.hostname = getenv("hostname");
+  //TODO: This seems to take time. check.
+  //char hostnamebuffer[1024];
+  //gethostname(hostnamebuffer, sizeof(hostnamebuffer));
+  //puts(hostnamebuffer);
+  //strcpy(job_log.hostname, hostnamebuffer);
+  
   //job_log.slurm_job_id = ()
   job_log.slurm_job_num_nodes = getenv("SLURM_JOB_NUM_NODES");
   job_log.slurm_job_account = getenv("SLURM_JOB_ACCOUNT");
   
-  //This is part to get the nodetype
+  // This is part to get the nodetype
   job_log.nodetype="None";  
   if (strcmp(job_log.host, "cori")==0){
     FILE *fptr = fopen("/proc/cpuinfo", "r");
@@ -105,9 +110,9 @@ void extrct_log_info(const int ismpi)
 
 void reset_api_counts(struct api_counts my_api_counts)
 {
-  my_api_counts.open_count = 0;
-  my_api_counts.create_count = 0; 
-  my_api_counts.close_count = 0;
+  my_api_counts.fopen_count = 0;
+  my_api_counts.fcreate_count = 0; 
+  my_api_counts.fclose_count = 0;
   my_api_counts.dread_count = 0;
   my_api_counts.dwrite_count = 0;
   return ;
@@ -116,15 +121,14 @@ void reset_api_counts(struct api_counts my_api_counts)
 
 static int mpi_send_mods_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag)
 {
-  //fprintf(stderr, "Local sum for process %d - %d\n",
-  //     world_rank, loc_parallel_api_counts.open_count);
+
   // Reduce all of the local sums into the global sum
-  MPI_Reduce(&loc_parallel_api_counts.open_count, &glo_parallel_api_counts.open_count, 
-					1, MPI_INT, MPI_SUM, 0, comm);
+  MPI_Reduce(&loc_parallel_api_counts.fopen_count, &glo_parallel_api_counts.fopen_count, 
+					1, MPI_INT, MPI_MAX, 0, comm);
   MPI_Reduce(&loc_parallel_api_counts.dread_count, &glo_parallel_api_counts.dread_count, 
-					1, MPI_INT, MPI_SUM, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, comm);
   MPI_Reduce(&loc_parallel_api_counts.dwrite_count, &glo_parallel_api_counts.dwrite_count, 
-					1, MPI_INT, MPI_SUM, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, comm);
   MPI_Reduce(&loc_parallel_read_data, &glo_parallel_read_data, 1, MPI_INT, MPI_SUM, 
 							    0, comm);
   MPI_Reduce(&loc_parallel_write_data, &glo_parallel_write_data, 1, MPI_INT, MPI_SUM, 
@@ -135,7 +139,9 @@ static int mpi_send_mods_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag
   if(world_rank==0){
     send_to_mods();
     //fprintf(stderr, "Global sum for process %d - %d\n",
-    //   world_rank, glo_parallel_api_counts.open_count);
+    //   world_rank, glo_parallel_api_counts.fopen_count);
+    //fprintf(stderr, "Local sum for process %d - %d\n",
+    //     world_rank, loc_parallel_api_counts.fopen_count);
   }
   
   // Reset all counts
@@ -197,19 +203,22 @@ void mpi_atexit()
   return ;
 }
 
-
+// CR Note- Do we need get_fapl_mpio? 
 void mpi_extrct_log_info(hid_t fapl_id)
 {
-  
-  MPI_Comm mpi_comm = MPI_COMM_NULL;
-  MPI_Info mpi_info = MPI_COMM_NULL;
   int world_rank;
-  //MPI_Comm_size(mpi_comm, &world_size);
+  MPI_Comm mpi_comm = MPI_COMM_WORLD;
+ 
+  // Fetch the comm
+  /*
+  MPI_Comm mpi_comm = MPI_COMM_NULL;
+  MPI_Info mpi_info = MPI_COMM_INFO;
+  MPI_Comm_size(mpi_comm, &world_size);
   H5Pget_fapl_mpio(fapl_id, &mpi_comm, &mpi_info);
-  //printf("%s:%u - <message>\n",__func__, __LINE__);
+  */
   MPI_Comm_rank(mpi_comm, &world_rank);
   
-  // write from only one rank per communicator
+  // Write from only one rank per communicator
   if (world_rank == 0)
     extrct_log_info(1);
   return ;
@@ -218,12 +227,9 @@ void mpi_extrct_log_info(hid_t fapl_id)
 
 void mpi_log(hid_t fapl_id)
 {
-  fprintf(stderr, "%s:%u - <message>\n",__func__, __LINE__);
   if (tot_parallel_api_count == 0){
     mpi_extrct_log_info(fapl_id);
-    fprintf(stderr, "%s:%u - <message>\n",__func__, __LINE__);
     mpi_atexit();
-    fprintf(stderr, "%s:%u - <message>\n",__func__, __LINE__);
   }
   tot_parallel_api_count++;
   return ;
@@ -234,7 +240,6 @@ void serial_log()
 {
   if (tot_serial_api_count == 0){
     extrct_log_info(0);
-    //printf("%s:%u - <message>\n",__func__, __LINE__);
     atexit(send_to_mods);
   }
   tot_serial_api_count++;
@@ -253,17 +258,16 @@ hsize_t get_dataset_size(void* dset, hid_t mem_type_id, hid_t mem_space_id)
   return r_size; 
 }
 
-//TODO: H5get_fapl_mpio does not work
+//FIXME: H5get_fapl_mpio does not work
 void H5Fcreate_log(const char *name, unsigned flags, hid_t fcpl_id, hid_t fapl_id)
 {
-  //printf("%s:%u - <message>\n",__func__, __LINE__);
   if (is_mpi(fapl_id)){
-    //mpi_log(fapl_id);
-    loc_parallel_api_counts.create_count++;
+    mpi_log(fapl_id);
+    loc_parallel_api_counts.fcreate_count++;
   }
   else{
     serial_log(); 
-    serial_api_counts.create_count++;
+    serial_api_counts.fcreate_count++;
   }
   return ;
 }
@@ -273,11 +277,11 @@ void H5Fopen_log(const char *name, unsigned flags, hid_t fapl_id)
 {
   if (is_mpi(fapl_id)){
     mpi_log(fapl_id);
-    loc_parallel_api_counts.open_count++;
+    loc_parallel_api_counts.fopen_count++;
   }
   else{
     serial_log();
-    serial_api_counts.open_count++;
+    serial_api_counts.fopen_count++;
   } 
   return ;
 }
@@ -304,14 +308,17 @@ void H5Dread_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
 void H5Dwrite_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
 		hid_t file_space_id, hid_t plist_id, void *buf)
 {
-  /*if (is_mpi_D(plist_id)){
+  hsize_t dwrite_size = get_dataset_size(dset, mem_type_id, mem_space_id);
+  if (is_mpi_D(plist_id)){
     tot_parallel_api_count++;
-    loc_parallel_api_counts.dread_count++;
+    loc_parallel_api_counts.dwrite_count++;
+    loc_parallel_write_data += dwrite_size;
   }
   else{
     tot_serial_api_count++;
-    serial_api_counts.dread_count++;
-  }*/
+    serial_api_counts.dwrite_count++;
+    serial_write_data += dwrite_size;
+  }
   return ;
 }
 
