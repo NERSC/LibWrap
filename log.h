@@ -17,6 +17,19 @@ extern struct api_counts parallel_api_counts;
 void H5Fcreate_log();
 void H5Fopen_log();
 void H5Fclose_log();
-void H5Dread_log();
-void H5Dwrite_log();
 
+void H5Acreate2_log();
+void H5Aopen_log();
+void H5Awrite_log();
+void H5Aread_log();
+void H5Aclose_log();
+
+void H5Dcreate2_log();
+void H5Dopen2_log();
+void H5Dwrite_log();
+void H5Dread_log();
+void H5Dclose_log();
+
+void H5Gcreate2_log();
+void H5Gopen2_log();
+void H5Gclose_log();

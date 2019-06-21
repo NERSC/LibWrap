@@ -269,14 +269,16 @@ phdf5writeInd(char *filename)
     MESG("H5Pset_fapl_mpio succeed");
 
     /* create the file collectively */
+    //fprintf(stderr, "Attempting to Create %s %u\n", filename, __LINE__);
     fid1 = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, acc_tpl1);
+    //fprintf(stderr, "Succesfully Created %s %u\n", filename, __LINE__);
     assert(fid1 != FAIL);
     MESG("H5Fcreate succeed");
-
+    
     /* Release file-access template */
     ret = H5Pclose(acc_tpl1);
     assert(ret != FAIL);
-
+    //fprintf(stderr, "Succesfully released the file access %s %u\n", filename, __LINE__);
 
     /* --------------------------
      * Define the dimensions of the overall datasets
@@ -292,6 +294,7 @@ phdf5writeInd(char *filename)
     dataset1 = H5Dcreate2(fid1, DATASETNAME1, H5T_NATIVE_INT, sid1,
 			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     assert(dataset1 != FAIL);
+    //fprintf(stderr, "Succesfully created datasets %s %u\n", filename, __LINE__);
     MESG("H5Dcreate2 succeed");
 
     /* create another dataset collectively */
@@ -344,6 +347,7 @@ if (verbose)
     assert(ret != FAIL);
     MESG("H5Dwrite succeed");
 
+    //fprintf(stderr, "Succesfully written data %s %u\n", filename, __LINE__);
     /* release dataspace ID */
     H5Sclose(file_dataspace);
 
@@ -360,6 +364,7 @@ if (verbose)
 
     /* close the file collectively */
     H5Fclose(fid1);
+    
 }
 
 /* Example of using the parallel HDF5 library to read a dataset */
@@ -516,7 +521,9 @@ phdf5writeAll(char *filename)
     MESG("H5Pset_fapl_mpio succeed");
 
     /* create the file collectively */
+    //fprintf(stderr, "Attempting to Create %s %u\n", filename, __LINE__);
     fid1=H5Fcreate(filename,H5F_ACC_TRUNC,H5P_DEFAULT,acc_tpl1);
+    //fprintf(stderr, "Succesfully Created %s %u\n", filename, __LINE__);
     assert(fid1 != FAIL);
     MESG("H5Fcreate succeed");
 
@@ -908,7 +915,9 @@ test_split_comm_access(char filenames[][PATH_MAX])
 	assert(ret != FAIL);
 
 	/* create the file collectively */
-	fid=H5Fcreate(filenames[color],H5F_ACC_TRUNC,H5P_DEFAULT,acc_tpl);
+        //fprintf(stderr, "Attempting to create %s %u\n", filenames[color], __LINE__);
+        fid=H5Fcreate(filenames[color],H5F_ACC_TRUNC,H5P_DEFAULT,acc_tpl);
+        //fprintf(stderr, "Succesfully Created %s %u\n", filenames[color], __LINE__);
 	assert(fid != FAIL);
 	MESG("H5Fcreate succeed");
 
