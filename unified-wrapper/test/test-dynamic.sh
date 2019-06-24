@@ -2,7 +2,7 @@
 module load cray-hdf5
 export CRAYPE_LINK_TYPE=dynamic
 echo "============"
-export GOTCHA=/global/homes/a/aalmamun/gotcha/install
+#export GOTCHA=/global/homes/a/aalmamun/gotcha/install
 
 GOTCHAH5=../wrapper/libgotchah5.so
 LIB_DIR=/global/homes/a/aalmamun/lbl-wrapper/dynamic-wrapper
