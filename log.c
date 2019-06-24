@@ -63,119 +63,54 @@ hbool_t is_mpi_D(hid_t plist_id)
 }
 
 
-void extrct_log_info()
-{
-  unsigned long long ts = (unsigned long)time(NULL);
-  time_t rtime;
-  time(&rtime);
-  struct tm * info = localtime(&rtime);
-  //Dont need this 
-  //job_log.ismpi = ismpi;
-  job_log.uid = getuid(); 
-  job_log.first_hdf5api_time = asctime(info); 
-  job_log.host = getenv("NERSC_HOST");
-  job_log.user = getenv("USER");
-  //TODO: This seems to take time. check.
-  //char hostnamebuffer[1024];
-  //gethostname(hostnamebuffer, sizeof(hostnamebuffer));
-  //puts(hostnamebuffer);
-  //strcpy(job_log.hostname, hostnamebuffer);
-  
-  //job_log.slurm_job_id = ()
-  job_log.slurm_job_num_nodes = getenv("SLURM_JOB_NUM_NODES");
-  job_log.slurm_job_account = getenv("SLURM_JOB_ACCOUNT");
-  
-  // This is part to get the nodetype
-  job_log.nodetype="None";  
-  if (strcmp(job_log.host, "cori")==0){
-    FILE *fptr = fopen("/proc/cpuinfo", "r");
-    if (fptr == NULL)
-      fprintf(stderr, "failed to open /proc/cpuinfo\n");
-    char* line=NULL;
-    size_t len;
-    ssize_t read;
-    while ((read=getline(&line, &len, fptr))!=-1){
-      char tempstr[10];
-      strncpy(tempstr, line, 10);
-      if (strcmp(tempstr, "model name")==0){
-        if (strstr(line, "Phi")!=NULL)
-          job_log.nodetype = "KNL";
-        else {
-          job_log.nodetype = "Haswell";
-        }
-        break; 
-      }
-    }
-    fclose(fptr);
-  }
-  //TODO: get this working
-  /*  
-  if (strcmp(job_log.hostname, "nid")==0)
-    job_log.is_compute = 1;
-  else
-    job_log.is_compute = 0; 
-  */
-  return ;
-}
-
-
 void reset_api_counts(struct api_counts my_api_counts)
 {
-  my_api_counts.fcreate_count;
-  my_api_counts.fopen_count;
-  my_api_counts.fclose_count;
-  my_api_counts.acreate_count;
-  my_api_counts.aopen_count;
-  my_api_counts.awrite_count;
-  my_api_counts.aread_count;
-  my_api_counts.aclose_count;
-  my_api_counts.dcreate_count;
-  my_api_counts.dopen_count;
-  my_api_counts.dwrite_count;
-  my_api_counts.dread_count;
-  my_api_counts.dclose_count;
-  my_api_counts.gcreate_count;
-  my_api_counts.gopen_count;
-  my_api_counts.gclose_count;
+  my_api_counts.fcreate_count=0;
+  my_api_counts.fopen_count=0;
+  my_api_counts.fclose_count=0;
+  my_api_counts.acreate_count=0;
+  my_api_counts.aopen_count=0;
+  my_api_counts.awrite_count=0;
+  my_api_counts.aread_count=0;
+  my_api_counts.aclose_count=0;
+  my_api_counts.dcreate_count=0;
+  my_api_counts.dopen_count=0;
+  my_api_counts.dwrite_count=0;
+  my_api_counts.dread_count=0;
+  my_api_counts.dclose_count=0;
+  my_api_counts.gcreate_count=0;
+  my_api_counts.gopen_count=0;
+  my_api_counts.gclose_count=0;
   return ;
 }
 
-//FUTURE TODO: write a function to do MPI reduce for all
-static int mpi_send_mods_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag)
+
+void log_MPI_reduce()
 {
-
-  // Reduce all of the local sums into the global sum
+  /* Reduce all of the local sums into the global sum */
   MPI_Reduce(&loc_parallel_api_counts.fopen_count, &glo_parallel_api_counts.fopen_count, 
-					1, MPI_INT, MPI_MAX, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_api_counts.fcreate_count, &glo_parallel_api_counts.fcreate_count, 
-					1, MPI_INT, MPI_MAX, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_api_counts.dread_count, &glo_parallel_api_counts.dread_count, 
-					1, MPI_INT, MPI_MAX, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_api_counts.dwrite_count, &glo_parallel_api_counts.dwrite_count, 
-					1, MPI_INT, MPI_MAX, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_api_counts.dopen_count, &glo_parallel_api_counts.dopen_count, 
-					1, MPI_INT, MPI_MAX, 0, comm);
+					1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_read_data, &glo_parallel_read_data, 1, MPI_INT, MPI_SUM, 
-							    0, comm);
+							    0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_write_data, &glo_parallel_write_data, 1, MPI_INT, MPI_SUM, 
-							    0, comm);
+							    0, MPI_COMM_WORLD);
   MPI_Reduce(&loc_parallel_write_data, &glo_parallel_write_data, 1, MPI_INT, MPI_SUM, 
-							    0, comm);
+							    0, MPI_COMM_WORLD);
   
+  return ;
+}
 
-
-  int world_rank;
-  MPI_Comm_rank(comm, &world_rank);
-  /* tot_parallel_api_count is guaranteed to be 0 here. check if sending from serial*/
-  if(world_rank == 0 ){
-    log_finalize();
-    // send_to_mods();
-    /*fprintf(stderr, "Global sum for process %d - %d\n",
-       world_rank, glo_parallel_api_counts.fopen_count);
-    fprintf(stderr, "Local sum for process %d - %d\n",
-         world_rank, loc_parallel_api_counts.fopen_count);*/
-  }
-  
+/* To reset counters and free memory */
+void log_MPI_finalize()
+{
   // Reset all counts
   tot_parallel_api_count = 0;
   glo_parallel_read_data = 0;
@@ -197,45 +132,11 @@ static int mpi_send_mods_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag
   job_log.first_hdf5api_time = NULL;
   job_log.ismpi = -1;
   job_log.uid = -1;
-  
-  return MPI_SUCCESS;
-}
-
-
-void mpi_atexit()
-{ 
-  int mpi_initialized;
-  int mpi_finalized;
-  int mpi_code;
-  
-  MPI_Initialized(&mpi_initialized);
-  MPI_Finalized(&mpi_finalized);
-   
-  /* add an attribute on MPI_COMM_WORLD to call send_to_mods()
-     when it is destroyed, i.e. on MPI_Finalize */
-  if (mpi_initialized && !mpi_finalized) {
-      if(MPI_SUCCESS != (mpi_code = MPI_Comm_create_keyval(MPI_COMM_NULL_COPY_FN, 
-  					(MPI_Comm_delete_attr_function *)mpi_send_mods_cb, 
-									&key_val, NULL))){
-  	//HMPI_GOTO_ERROR(FAIL, "MPI_Comm_create_keyval failed", mpi_code)
-        fprintf(stderr, "MPI_Comm_create_keyval failed");
-        return ;
-      }
-      if(MPI_SUCCESS != (mpi_code = MPI_Comm_set_attr(MPI_COMM_WORLD, key_val, NULL))){
-  	//HMPI_GOTO_ERROR(FAIL, "MPI_Comm_set_attr failed", mpi_code)
-        fprintf(stderr, "MPI_Comm_set_attr failed");
-        return ;
-      }
-      if(MPI_SUCCESS != (mpi_code = MPI_Comm_free_keyval(&key_val))){
-        //HMPI_GOTO_ERROR(FAIL, "MPI_Comm_free_keyval failed", mpi_code)
-        fprintf(stderr, "MPI_Comm_free_keyval failed");
-        return ;
-      }
-  }
+ 
   return ;
 }
 
-/* Extract log information from parallel hdf5 */
+
 void mpi_extrct_log_info(hid_t fapl_id)
 {
   int world_rank;
@@ -251,11 +152,11 @@ void mpi_extrct_log_info(hid_t fapl_id)
 
 
 void mpi_log(hid_t fapl_id)
-{
+{/*
   if (tot_parallel_api_count == 0){
     mpi_extrct_log_info(fapl_id);
     mpi_atexit();
-  }
+  }*/
   tot_parallel_api_count++;
   return ;
 }
@@ -263,10 +164,10 @@ void mpi_log(hid_t fapl_id)
 
 void serial_log()
 {
-  if (tot_serial_api_count == 0){
+  /*if (tot_serial_api_count == 0){
     // extrct_log_info();
     atexit(log_finalize);
-  }
+  }*/
   tot_serial_api_count++;
   return ;
 }

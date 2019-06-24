@@ -14,6 +14,10 @@ extern struct log_info job_log;
 extern struct api_counts serial_api_counts;
 extern struct api_counts parallel_api_counts;
 
+
+void log_MPI_finalize();
+void log_MPI_reduce();
+
 void H5Fcreate_log();
 void H5Fopen_log();
 void H5Fclose_log();

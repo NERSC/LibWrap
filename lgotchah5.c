@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "log_init.h"
 #include "log.h"
 
 typedef hid_t (*H5Fcreate_fptr)(const char * name, unsigned flags, hid_t fcpl_id, hid_t fapl_id);
@@ -77,6 +78,7 @@ static hid_t H5Fcreate_wrapper(const char * name, unsigned flags, hid_t fcpl_id,
   H5Fcreate_fptr H5Fcreate_wrappee = (H5Fcreate_fptr) gotcha_get_wrappee(H5Fcreate_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t result = H5Fcreate_wrappee(name, flags, fcpl_id, fapl_id);
   clock_t t2 = clock();
   
@@ -96,6 +98,7 @@ static hid_t H5Fopen_wrapper(const char *name, unsigned flags, hid_t fapl_id)
   H5Fopen_fptr H5Fopen_wrappee = (H5Fopen_fptr) gotcha_get_wrappee(H5Fopen_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t result = H5Fopen_wrappee(name, flags, fapl_id);
   clock_t t2 = clock();
 
@@ -115,6 +118,7 @@ static herr_t H5Fclose_wrapper(hid_t file_id)
   H5Fclose_fptr H5Fclose_wrappee = (H5Fclose_fptr) gotcha_get_wrappee(H5Fclose_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t result = H5Fclose_wrappee(file_id);
   clock_t t2 = clock();
 
@@ -132,6 +136,7 @@ static hid_t H5Acreate2_wrapper(hid_t loc_id, const char *attr_name, hid_t type_
   H5Acreate2_fptr H5Acreate2_wrappee = (H5Acreate2_fptr) gotcha_get_wrappee(H5Acreate2_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t result = H5Acreate2_wrappee(loc_id, attr_name, type_id, space_id, acpl_id, aapl_id);
   clock_t t2 = clock();
   
@@ -151,6 +156,7 @@ static hid_t H5Aopen_wrapper(hid_t obj_id, const char *attr_name, hid_t aapl_id)
   H5Aopen_fptr H5Aopen_wrappee = (H5Aopen_fptr) gotcha_get_wrappee(H5Aopen_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t result = H5Aopen_wrappee(obj_id, attr_name, aapl_id);
   clock_t t2 = clock();
 
@@ -170,6 +176,7 @@ static herr_t H5Awrite_wrapper(hid_t attr_id, hid_t mem_type_id, const void *buf
   H5Awrite_fptr H5Awrite_wrappee = (H5Awrite_fptr) gotcha_get_wrappee(H5Awrite_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t ret_val = H5Awrite_wrappee(attr_id, mem_type_id, buf);
   clock_t t2 = clock();
  
@@ -189,6 +196,7 @@ static herr_t H5Aread_wrapper(hid_t attr_id, hid_t mem_type_id, void *buf)
   H5Aread_fptr H5Aread_wrappee = (H5Aread_fptr) gotcha_get_wrappee(H5Aread_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t ret_val = H5Aread_wrappee(attr_id, mem_type_id, buf);
   clock_t t2 = clock();
   
@@ -208,6 +216,7 @@ static herr_t H5Aclose_wrapper(hid_t attr_id)
   H5Aclose_fptr H5Aclose_wrappee = (H5Aclose_fptr) gotcha_get_wrappee(H5Aclose_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t result = H5Aclose_wrappee(attr_id);
   clock_t t2 = clock();
 
@@ -225,6 +234,7 @@ static hid_t H5Dcreate2_wrapper(hid_t loc_id, const char *name, hid_t dtype_id,
   H5Dcreate2_fptr H5Dcreate2_wrappee = (H5Dcreate2_fptr) gotcha_get_wrappee(H5Dcreate2_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t ret_val = H5Dcreate2_wrappee(loc_id, name, dtype_id, space_id, 
 					   lcpl_id, dcpl_id, dapl_id);
   clock_t t2 = clock();
@@ -245,6 +255,7 @@ static hid_t H5Dopen2_wrapper(hid_t loc_id, const char *name, hid_t dapl_id)
   H5Dopen2_fptr H5Dopen2_wrappee = (H5Dopen2_fptr) gotcha_get_wrappee(H5Dopen2_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t ret_val = H5Dopen2_wrappee(loc_id, name, dapl_id);
   clock_t t2 = clock();
   
@@ -265,6 +276,7 @@ static herr_t H5Dwrite_wrapper(void *dset, hid_t mem_type_id, hid_t mem_space_id
   H5Dwrite_fptr H5Dwrite_wrappee = (H5Dwrite_fptr) gotcha_get_wrappee(H5Dwrite_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t ret_val = H5Dwrite_wrappee(dset, mem_type_id, mem_space_id, file_space_id,
 							plist_id, buf);
   clock_t t2 = clock();
@@ -286,6 +298,7 @@ static herr_t H5Dread_wrapper(void *dset, hid_t mem_type_id, hid_t mem_space_id,
   H5Dread_fptr H5Dread_wrappee = (H5Dread_fptr) gotcha_get_wrappee(H5Dread_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t ret_val = H5Dread_wrappee(dset, mem_type_id, mem_space_id, file_space_id, 
 							plist_id, buf );
   clock_t t2 = clock();
@@ -306,6 +319,7 @@ static herr_t H5Dclose_wrapper(hid_t dataset_id)
   H5Dclose_fptr H5Dclose_wrappee = (H5Dclose_fptr) gotcha_get_wrappee(H5Dclose_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t ret_val = H5Dclose_wrappee(dataset_id);
   clock_t t2 = clock();
   
@@ -326,6 +340,7 @@ static hid_t H5Gcreate2_wrapper(hid_t loc_id, const char *name, hid_t lcpl_id,
   H5Gcreate2_fptr H5Gcreate2_wrappee = (H5Gcreate2_fptr) gotcha_get_wrappee(H5Gcreate2_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t ret_val = H5Gcreate2_wrappee(loc_id, name, lcpl_id, gcpl_id, gapl_id);
   clock_t t2 = clock();
   
@@ -345,6 +360,7 @@ static hid_t H5Gopen2_wrapper(hid_t loc_id, const char * name, hid_t gapl_id)
   H5Gopen2_fptr H5Gopen2_wrappee = (H5Gopen2_fptr) gotcha_get_wrappee(H5Gopen2_handle);
   
   clock_t t1 = clock();
+  log_init();
   hid_t ret_val = H5Gopen2_wrappee(loc_id, name, gapl_id);
   clock_t t2 = clock();
   
@@ -364,6 +380,7 @@ static herr_t H5Gclose_wrapper(hid_t group_id)
   H5Gclose_fptr H5Gclose_wrappee = (H5Gclose_fptr) gotcha_get_wrappee(H5Gclose_handle);
   
   clock_t t1 = clock();
+  log_init();
   herr_t ret_val = H5Gclose_wrappee(group_id);
   clock_t t2 = clock();
   
