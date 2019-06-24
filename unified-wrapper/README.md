@@ -1,8 +1,12 @@
-# Static lib wrapper
+# Unified wrapper
 
-* Prepare the pkg-config file first. Pkg-config file must contain the following information:
+* Set GOTCHA path:
 ```
-source set-wrap.sh # helps you to prepare all shared and static wrapper libraries
+export GOTCHA= <path to gotcha installation directory>
+```
+* Run Makefile to generate all libraries:
+```
+make
 ```
 
 * Prepare the pkg-config file first. Pkg-config file must contain the following information:
@@ -33,3 +37,10 @@ Load module: module load module_name
 
 Note: Cori needs the module to be in the default directory. Once the module is in the default directory, we do not need to set MODULEPATH anymore. Just load it and use it.
 ```
+* Test
+```
+source test-static.sh # to test static wrapper
+source test-dynamic.sh # to test dynamic wrapper
+
+```
+
