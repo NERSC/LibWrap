@@ -1,0 +1,31 @@
+TARGET = libgotchah5.a
+LIBS = -lgotcha
+GOTCHA=/global/homes/a/aalmamun/gotcha-static/install
+CC = LIBRARY_PATH=$(GOTCHA)/lib64 cc
+CFLAGS = -fPIC -I$(GOTCHA)/include -L$(GOTCHA)/lib64 -lgotcha
+
+.PHONY: default all clean
+
+default: $(TARGET)
+all: default
+
+OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
+HEADERS = $(wildcard *.h)
+
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.PRECIOUS: $(TARGET) $(OBJECTS)
+
+#$(TARGET):$(OBJECTS) 
+#	 ar rcs $(OBJECTS)  -o $@
+#ar rcs libgotchah5.a $(OBJECTS)  -o $@
+SRC=libgotcha.c
+OBJ = $(SRC:.c=.o)
+$(TARGET): $(OBJ)
+	ar rcs $(TARGET) $(OBJ)
+
+
+clean:
+	-rm -f *.o
+	-rm -f $(TARGET)

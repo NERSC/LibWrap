@@ -1,0 +1,10 @@
+
+wrapper_prefix=/global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/pkg-check
+exec_prefix=${wrapper_prefix}
+wrapper_libdir=/global/homes/a/aalmamun/dyninst-10.1.0/examples/wrap/mywrapper
+
+Name:wrapper
+Description: The hdf5 wrapper
+Version: 1
+Libs: -Wl,--wrap=foo -Wl,--wrap=cool -Wl,--wrap=H5Fcreate -Wl,--wrap=H5Fclose -Wl,--wrap=H5Fopen -Wl,--wrap=fopen -Wl,--wrap=fclose -Wl,--wrap=open -Wl,--wrap=close -L${wrapper_libdir} -lwrapper #-lgotchah5 -lgotcha
+Libs.private: -Wl,--wrap=foo -Wl,--wrap=cool -Wl,--wrap=H5Fcreate -Wl,--wrap=H5Fclose -Wl,--wrap=H5Fopen -Wl,--wrap=fopen -Wl,--wrap=fclose -Wl,--wrap=open -Wl,--wrap=close -L${wrapper_libdir} -lwrapper
