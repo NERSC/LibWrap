@@ -43,5 +43,6 @@ $(TARGET2): $(OBJECTS)
 #	ar rcs $(TARGET) *.o
 
 clean:
-	-rm *.o
+	-rm libgotchah5.o
 	-rm *.a
+	-rm *.so
