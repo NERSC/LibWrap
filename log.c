@@ -1,6 +1,5 @@
 #include "log.h"
 
-struct log_info job_log; 
 struct api_counts loc_parallel_api_counts, serial_api_counts, glo_parallel_api_counts;
 
 static int tot_serial_api_count = 0;
@@ -13,20 +12,42 @@ long long serial_write_data = 0;
 long long glo_parallel_read_data = 0;
 long long glo_parallel_write_data = 0;
 
+struct api_counts serial_api_counts;
+struct api_counts parallel_api_counts;
 
-// To add attribute to MPI comm for cb
-int key_val;
+json_t *root; 
 
-/* Final call to extract info and call send_to_mods */
-//FIXME: make sure the individual ranks through serial dont go through this
-void log_finalize()
+void make_log()
 {
-  static int only_once = 0;
-  if (only_once == 0){
-    extrct_log_info();
-    send_to_mods();
-  }
-  only_once++;
+  root = json_object();
+  //TODO: JANSSON does not handle unsigned int
+  json_object_set_new( root, "category", json_string("MODS") );
+  json_object_set_new( root, "name", json_string("gotchaio-tracer") );
+  /* Serial Counts */
+  json_object_set_new(root, "serial fcreate count", json_integer(serial_api_counts.fcreate_count));
+  json_object_set_new(root, "serial fopen count", json_integer(serial_api_counts.fopen_count));
+  json_object_set_new(root, "serial acreate count", json_integer(serial_api_counts.acreate_count));
+  json_object_set_new(root, "serial aopen count", json_integer(serial_api_counts.aopen_count));
+  json_object_set_new(root, "serial aread count", json_integer(serial_api_counts.aread_count));
+  json_object_set_new(root, "serial awrite count", json_integer(serial_api_counts.awrite_count));
+  json_object_set_new(root, "serial dcreate count", json_integer(serial_api_counts.dcreate_count));
+  json_object_set_new(root, "serial dopen count", json_integer(serial_api_counts.dopen_count));
+  json_object_set_new(root, "serial dread count", json_integer(serial_api_counts.dread_count));
+  json_object_set_new(root, "serial dwrite count", json_integer(serial_api_counts.dwrite_count));
+  json_object_set_new(root, "serial gcreate count", json_integer(serial_api_counts.gcreate_count));
+  json_object_set_new(root, "serial gopen count", json_integer(serial_api_counts.gopen_count));
+  /* Parallel Counts */
+  json_object_set_new(root, "parallel fcreate count", json_integer(glo_parallel_api_counts.fcreate_count));
+  json_object_set_new(root, "parallel fopen count", json_integer(glo_parallel_api_counts.fopen_count));
+  json_object_set_new(root, "parallel dread count", json_integer(glo_parallel_api_counts.dread_count));
+  json_object_set_new(root, "parallel dwrite count", json_integer(glo_parallel_api_counts.dwrite_count));
+  /* Data Read/Write */ 
+  json_object_set_new(root, "total serial dataset read size", json_integer(serial_read_data));
+  json_object_set_new(root, "total serial dataset write size", json_integer(serial_write_data));
+  json_object_set_new(root, "total parallel dataset read size", json_integer(glo_parallel_read_data));
+  json_object_set_new(root, "total parallel dataset write size", json_integer(glo_parallel_write_data));
+  
+  return ;
 }
 
 
@@ -120,33 +141,6 @@ void log_MPI_finalize()
 
   reset_api_counts(loc_parallel_api_counts);
   reset_api_counts(glo_parallel_api_counts); 
-  // Reset log information
-  job_log.host = NULL;
-  job_log.user = NULL;
-  job_log.hostname = NULL;
-  job_log.slurm_job_id = NULL;
-  job_log.slurm_job_num_nodes = NULL;
-  job_log.slurm_job_account = NULL;
-  job_log.nodetype = NULL;
-  job_log.is_compute = -1;
-  job_log.first_hdf5api_time = NULL;
-  job_log.ismpi = -1;
-  job_log.uid = -1;
- 
-  return ;
-}
-
-
-void mpi_extrct_log_info(hid_t fapl_id)
-{
-  int world_rank;
-  MPI_Comm mpi_comm = MPI_COMM_WORLD;
-  MPI_Comm_rank(mpi_comm, &world_rank);
- 
-  /* Write from only one rank */
-  /* Do it even when serial has done extrct_log_info to overwrite the ismpi */
-  if (world_rank == 0)
-    extrct_log_info();
   return ;
 }
 
