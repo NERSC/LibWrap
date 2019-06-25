@@ -1,4 +1,4 @@
-#GOTCHA=/global/homes/a/aalmamun/gotcha-static/install
+GOTCHA=/global/homes/a/aalmamun/gotcha-static/install
 CC = LD_LIBRARY_PATH=$(GOTCHA)/lib64 cc
 CFLAGS = -fPIC -I$(GOTCHA)/include -L$(GOTCHA)/lib64
 LIBS = -lgotcha

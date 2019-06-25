@@ -12,7 +12,9 @@ if test -f "$GOTCHALIB"; then
  echo "Testing apps with COMMON"
  echo "============"
  cc  linux.c -o linux #-Wl,--wrap=open -L${LIB_DIR} -L${GOTCHADIR} -lgotcha -lgotchah5 -ltest -o linux 
+ cc wrapper_hdf5.c -o hdf5_wrap
  LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./linux
+ LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./hdf5_wrap
  ./linux
  echo "============"
  echo "Done"
