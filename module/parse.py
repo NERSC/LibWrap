@@ -79,7 +79,7 @@ def read_config_file(filename):
 def main(modulename):
 	functions, log_wrap_functions , libraries, log_mpi_reduce_fn, log_mpi_finalize_fn,\
 				log_file_nm, make_log_fn, include_headers \
-						 = read_config_file(modulename+".txt")
+						 = read_config_file(modulename+".config")
 	#write_gotcha_file("gotcha_"+modulename+".c", functions, modulename)
 	generate_log_init(make_log_fn, log_mpi_reduce_fn, log_mpi_finalize_fn, log_file_nm)
 	generate_wrapper("../wrapper.c", functions, modulename, log_file_nm, include_headers,\

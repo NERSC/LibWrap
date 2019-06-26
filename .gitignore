@@ -4,6 +4,7 @@
 !*.h
 !*.py
 !*.sh
+!*.config
 !test/
 !module/
 !example_logfile/
