@@ -19,7 +19,6 @@ json_t *root;
 
 void make_log()
 {
-  root = json_object();
   //TODO: JANSSON does not handle unsigned int
   json_object_set_new( root, "category", json_string("MODS") );
   json_object_set_new( root, "name", json_string("gotchaio-tracer") );

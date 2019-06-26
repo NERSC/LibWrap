@@ -72,18 +72,16 @@ void send_to_mods()
   if(!json_test)
   {
       fprintf(stderr, "error: on line %d: %s\n", json_error.line, json_error.text);
-      //return 1;
       return;
   }
 
   messagebody = json_dumps(json_test,JSON_ENSURE_ASCII|JSON_ESCAPE_SLASH);
-  fprintf(stderr,"json_dumps %s\n",messagebody);
+  //fprintf(stderr,"json_dumps %s\n",messagebody);
   
   conn = amqp_new_connection();
   socket = amqp_ssl_socket_new(conn);
   
   if (!socket) {
-    //return die("died while creating SSL/TLS socket");
     die("died while creating SSL/TLS socket");
     return ;
   }
@@ -97,7 +95,6 @@ void send_to_mods()
 
   status = amqp_socket_open_noblock(socket, hostname, port, &consume_timeout);
   if (status) {
-    //return die("died while opening connection hostname %s port %d status %d",hostname,port,status);
     die("died while opening connection hostname %s port %d status %d",hostname,port,status);
     return ;
   }
@@ -110,7 +107,6 @@ void send_to_mods()
                     "died while logging in");
   amqp_channel_open(conn, 1);
   if (die_on_amqp_error(amqp_get_rpc_reply(conn), "died while opening channel")==-1){
-	//return -1;
         return ;
   }
   {
@@ -127,21 +123,17 @@ void send_to_mods()
                                     &props,
 				    amqp_cstring_bytes(messagebody)),
                  "died while publishing")==-1){
-     	//return -1;
 	return ;
      }
   }
 
   if (die_on_amqp_error(amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS), "died while closing channel")==-1){
-	//return -1;
 	return ;
   }
   if (die_on_amqp_error(amqp_connection_close(conn, AMQP_REPLY_SUCCESS), "died while closing connection")==-1){
-	//return -1;
 	return ;
   }
   if (die_on_error(amqp_destroy_connection(conn), "died while ending connection")==-1){
-	//return -1;
 	return ;
   }
   return ;

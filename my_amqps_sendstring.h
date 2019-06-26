@@ -7,7 +7,6 @@
 #include <jansson.h>
 
 #include "utils.h"
-#include "log.h"
-
+#include "log_job_info.h"
 
 void send_to_mods();

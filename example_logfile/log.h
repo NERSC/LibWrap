@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <jansson.h>
 
+/* This should call job_log_info*/
 #include "log_job_info.h"
 
 extern long long glo_parallel_read_data, glo_parallel_write_data, 

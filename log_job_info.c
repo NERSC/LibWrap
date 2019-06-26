@@ -15,8 +15,6 @@ void reset_job_log()
   job_log.slurm_job_account = NULL;
   job_log.nodetype = NULL;
   job_log.is_compute = -1;
-  job_log.first_hdf5api_time = NULL;
-  job_log.ismpi = -1;
   job_log.uid = -1;
   return ;
 }
@@ -24,14 +22,12 @@ void reset_job_log()
  
 void extrct_log_info()
 {
-  unsigned long long ts = (unsigned long)time(NULL);
-  time_t rtime;
-  time(&rtime);
-  struct tm * info = localtime(&rtime);
-  //Dont need this 
-  //job_log.ismpi = ismpi;
+  //unsigned long long ts = (unsigned long)time(NULL);
+  //time_t rtime;
+  //time(&rtime);
+  //struct tm * info = localtime(&rtime);
   job_log.uid = getuid(); 
-  job_log.first_hdf5api_time = asctime(info); 
+  //job_log.first_hdf5api_time = asctime(info); 
   job_log.host = getenv("NERSC_HOST");
   job_log.user = getenv("USER");
   //TODO: This seems to take time. check.
@@ -80,15 +76,16 @@ void extrct_log_info()
 
 void add_job_info()
 {
-  json_object_set_new( root, "uid", json_integer(job_log.uid) );
-  json_object_set_new(root, "first HDF5 API time", json_string(job_log.first_hdf5api_time));
+  root = json_object();
+  json_object_set_new(root, "category", json_string("MODS") );
+  json_object_set_new(root, "name", json_string("gotchaio-tracer") );
+  json_object_set_new(root, "uid", json_integer(job_log.uid) );
   json_object_set_new(root, "nersc host", json_string(job_log.host));
   json_object_set_new(root, "hostname", json_string(job_log.hostname));
   json_object_set_new(root, "user", json_string(job_log.user));
   json_object_set_new(root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
   json_object_set_new(root, "slurm job account", json_string(job_log.slurm_job_account));
   json_object_set_new(root, "nodetype", json_string(job_log.nodetype));
-  json_object_set_new(root, "ismpi", json_integer(job_log.ismpi));  
   
   return ;
 }

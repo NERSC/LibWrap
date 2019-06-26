@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <mpi.h>
-#include <hdf5.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -21,9 +20,7 @@ struct log_info{
   char* slurm_job_num_nodes;
   char* slurm_job_account;
   char* nodetype;
-  char* first_hdf5api_time;
   int is_compute;
-  int ismpi;
   int uid;
 };
 

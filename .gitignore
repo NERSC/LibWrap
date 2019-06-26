@@ -2,5 +2,8 @@
 !.gitignore
 !*.c
 !*.h
+!*.py
 !*.sh
 !test/
+!module/
+!example_logfile/

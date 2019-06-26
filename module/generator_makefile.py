@@ -1,4 +1,16 @@
-TARGET = lgotchah5.so 
+def generate_makefile(modulename):
+	'''
+	#FUTURE TODO: Add header string as well
+	str_libs = ""
+	str_libs_path = ""
+	for lib_path in libs_path:
+		str_libs_path = "%s-L%s" % (str_libs_path, lib_path)
+	for lib in libs:
+		str_libs = "%s-l%s" % (str_libs, lib)
+	'''
+	str_makefile = "TARGET = lwrap%s.so\n" % modulename
+	str_makefile = "%s %s" %(str_makefile, 
+"""
 #JANSSON=$(HOME)/projectcode/jansson-2.12
 #GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
 Rabbitmq_PATH = /usr/common/software/rabbitmq/0.9.0
@@ -26,3 +38,6 @@ $(TARGET): $(OBJECTS)
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
+"""  )
+	with open("../Makefile", "w") as f:
+		f.write(str_makefile)	
