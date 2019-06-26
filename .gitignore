@@ -5,6 +5,7 @@
 !*.py
 !*.sh
 !*.config
+!*.md
 !test/
 !module/
 !example_logfile/
