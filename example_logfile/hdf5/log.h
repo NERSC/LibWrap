@@ -12,8 +12,9 @@
 #include <fcntl.h>
 #include <jansson.h>
 
-/* This should call job_log_info*/
-#include "log_job_info.h"
+#include "my_amqps_sendstring.h"
+#include "log_job_info.h" /* This should call job_log_info if you want wrapper to extractt default job information like uid*/
+
 
 extern long long glo_parallel_read_data, glo_parallel_write_data, 
            serial_read_data, serial_write_data;
@@ -37,6 +38,9 @@ struct api_counts{
   int gopen_count;
   int gclose_count;
 };
+
+void mpi_finalize_cb();
+void log_atexit();
 
 void make_log();
 void log_MPI_finalize();

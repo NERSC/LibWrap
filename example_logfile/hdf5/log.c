@@ -16,9 +16,22 @@ struct api_counts serial_api_counts;
 struct api_counts parallel_api_counts;
 
 json_t *root; 
+struct log_info job_log;
 
-void make_log()
+
+void crt_json_log()
 {
+  root = json_object();
+  json_object_set_new(root, "category", json_string("MODS") );
+  json_object_set_new(root, "name", json_string("gotchaio-tracer") );
+  json_object_set_new(root, "uid", json_integer(job_log.uid) );
+  json_object_set_new(root, "nersc host", json_string(job_log.host));
+  json_object_set_new(root, "hostname", json_string(job_log.hostname));
+  json_object_set_new(root, "user", json_string(job_log.user));
+  json_object_set_new(root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
+  json_object_set_new(root, "slurm job account", json_string(job_log.slurm_job_account));
+  json_object_set_new(root, "nodetype", json_string(job_log.nodetype));
+  
   //TODO: JANSSON does not handle unsigned int
   json_object_set_new( root, "category", json_string("MODS") );
   json_object_set_new( root, "name", json_string("gotchaio-tracer") );
@@ -47,39 +60,6 @@ void make_log()
   json_object_set_new(root, "total parallel dataset write size", json_integer(glo_parallel_write_data));
   
   return ;
-}
-
-
-hbool_t is_mpi(hid_t fapl_id)
-{
-  hbool_t have_mpi = false;
-  hid_t driver_id;
-  // If its the default fapl then we know its serial
-  if (fapl_id == H5P_DEFAULT){
-    have_mpi = false;
-  }
-  else if((driver_id = H5Pget_driver(fapl_id)) > 0 && driver_id == H5FD_MPIO){
-    have_mpi = true;
-  }
-  return have_mpi;
-}
-
-
-hbool_t is_mpi_D(hid_t plist_id)
-{
-  hbool_t have_mpi = false;
-  H5FD_mpio_xfer_t xfer_mode = H5FD_MPIO_INDEPENDENT;
-  if (plist_id == H5P_DEFAULT){
-    have_mpi = false;
-  }
-  else{
-    H5Pget_dxpl_mpio(plist_id, &xfer_mode);
-    if(xfer_mode == H5FD_MPIO_INDEPENDENT)
-      have_mpi = false;
-    else 
-      have_mpi = true;
-  }
-  return have_mpi;
 }
 
 
@@ -128,10 +108,32 @@ void log_MPI_reduce()
   return ;
 }
 
-/* To reset counters and free memory */
-void log_MPI_finalize()
+//TODO: atexit should be probably different
+void log_atexit()
 {
-  // Reset all counts
+  extrct_job_info(job_log);
+  crt_json_log();
+  send_to_mods();
+  return ;	
+}
+
+
+void mpi_finalize_cb()
+{
+  MPI_Comm comm = MPI_COMM_WORLD;
+  /* Reduce operations */
+  log_MPI_reduce();
+  int world_rank;
+  MPI_Comm_rank(comm, &world_rank);
+  if (world_rank == 0)
+  {
+    extrct_job_info(job_log);
+    crt_json_log();
+    send_to_mods();
+  }
+  /* Clean up */
+  
+  /* To reset counters and free memory */
   tot_parallel_api_count = 0;
   glo_parallel_read_data = 0;
   glo_parallel_write_data = 0;
@@ -140,16 +142,48 @@ void log_MPI_finalize()
 
   reset_api_counts(loc_parallel_api_counts);
   reset_api_counts(glo_parallel_api_counts); 
-  return ;
+  reset_job_log();  
+  return ;	
 }
 
 
+/***************************/
+/* User wrappers start here */
+/***************************/
+hbool_t is_mpi(hid_t fapl_id)
+{
+  hbool_t have_mpi = false;
+  hid_t driver_id;
+  // If its the default fapl then we know its serial
+  if (fapl_id == H5P_DEFAULT){
+    have_mpi = false;
+  }
+  else if((driver_id = H5Pget_driver(fapl_id)) > 0 && driver_id == H5FD_MPIO){
+    have_mpi = true;
+  }
+  return have_mpi;
+}
+
+
+hbool_t is_mpi_D(hid_t plist_id)
+{
+  hbool_t have_mpi = false;
+  H5FD_mpio_xfer_t xfer_mode = H5FD_MPIO_INDEPENDENT;
+  if (plist_id == H5P_DEFAULT){
+    have_mpi = false;
+  }
+  else{
+    H5Pget_dxpl_mpio(plist_id, &xfer_mode);
+    if(xfer_mode == H5FD_MPIO_INDEPENDENT)
+      have_mpi = false;
+    else 
+      have_mpi = true;
+  }
+  return have_mpi;
+}
+
 void mpi_log(hid_t fapl_id)
-{/*
-  if (tot_parallel_api_count == 0){
-    mpi_extrct_log_info(fapl_id);
-    mpi_atexit();
-  }*/
+{  
   tot_parallel_api_count++;
   return ;
 }
@@ -157,10 +191,6 @@ void mpi_log(hid_t fapl_id)
 
 void serial_log()
 {
-  /*if (tot_serial_api_count == 0){
-    // extrct_log_info();
-    atexit(log_finalize);
-  }*/
   tot_serial_api_count++;
   return ;
 }

@@ -1,4 +1,4 @@
-def generate_log_init(str_make_log, str_log_MPI_reduce, str_log_MPI_finalize, fl_nm):
+def generate_log_init(str_log_atexit, str_log_MPI_finalize, fl_nm):
 
 	c_str = """#include "log_init.h"
 
@@ -10,10 +10,7 @@ int key_val; /* To add attribute to MPI comm for cb */
 void serial_atexit()
 {
   if (!flag_isparallel){
-    extrct_log_info();
-    add_job_info();  
     %s 
-    send_to_mods();
   }
   return ;
 }
@@ -21,21 +18,8 @@ void serial_atexit()
 
 static int mpi_log_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag)
 {
-  /* Reduce operations */
   %s
-  int world_rank;
-  MPI_Comm_rank(comm, &world_rank);
-  if (world_rank == 0)
-  {
-    extrct_log_info();
-    add_job_info();  
-    %s 
-    send_to_mods();
-  }
-  /* Clean up */
-  %s
-  reset_job_log();  
-  return MPI_SUCCESS;	
+  return MPI_SUCCESS;
 }
 
 
@@ -84,13 +68,15 @@ void log_init()
     flag_atexit=1;
   }
 }
-""" % (str_make_log, str_log_MPI_reduce, str_make_log, str_log_MPI_finalize)
+""" % (str_log_atexit, str_log_MPI_finalize)
 	with open("../log_init.c", "w") as fl_out:
 		fl_out.write(c_str)
 	str_include_logfl = ""
 	if fl_nm:
 		str_include_logfl = "#include \"%s.h\"" % fl_nm
-	h_str = """#include "my_amqps_sendstring.h"
+	h_str = """#include <stdlib.h>
+#include <stdio.h>
+#include <mpi.h>
 %s
 
 void log_init();

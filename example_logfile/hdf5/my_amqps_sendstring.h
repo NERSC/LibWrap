@@ -7,6 +7,7 @@
 #include <jansson.h>
 
 #include "utils.h"
-#include "log_job_info.h"
+
+extern json_t *root; 
 
 void send_to_mods();

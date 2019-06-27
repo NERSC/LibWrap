@@ -4,13 +4,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
-#include <mpi.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <jansson.h>
 
-extern json_t *root;
 
 struct log_info{
   char* host;
@@ -24,7 +20,7 @@ struct log_info{
   int uid;
 };
 
-void extrct_log_info();
+void extrct_job_info(struct log_info job_log);
 void reset_job_log();
 
 #endif

@@ -1,6 +1,5 @@
 #include "log_job_info.h"
 
-json_t *root;
 struct log_info job_log; 
 
 
@@ -19,8 +18,8 @@ void reset_job_log()
   return ;
 }
 
- 
-void extrct_log_info()
+//TODO: add job id
+void extrct_job_info(struct log_info job_log)
 {
   //unsigned long long ts = (unsigned long)time(NULL);
   //time_t rtime;
@@ -70,22 +69,5 @@ void extrct_log_info()
   else
     job_log.is_compute = 0;
   */
-  return ;
-}
-
-
-void add_job_info()
-{
-  root = json_object();
-  json_object_set_new(root, "category", json_string("MODS") );
-  json_object_set_new(root, "name", json_string("gotchaio-tracer") );
-  json_object_set_new(root, "uid", json_integer(job_log.uid) );
-  json_object_set_new(root, "nersc host", json_string(job_log.host));
-  json_object_set_new(root, "hostname", json_string(job_log.hostname));
-  json_object_set_new(root, "user", json_string(job_log.user));
-  json_object_set_new(root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
-  json_object_set_new(root, "slurm job account", json_string(job_log.slurm_job_account));
-  json_object_set_new(root, "nodetype", json_string(job_log.nodetype));
-  
-  return ;
+  return job_log;
 }

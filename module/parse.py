@@ -32,23 +32,22 @@ class func:
 
 
 def read_config_file(filename):
-	def addsemicolon(fn_nm):
+	def addparasemicolon(fn_nm):
 		if fn_nm:
-			fn_nm = "%s;" % fn_nm
+			fn_nm = "%s();" % fn_nm
 		return fn_nm
-	log_mpi_reduce_fn, log_mpi_finalize_fn = "", ""
-	make_log_fn, log_file_nm = "", ""
-	functions, libraries = [], []
-	include_headers, log_wrap_functions = [], []
+	log_atexit_fn, log_mpi_finalize_fn = "", ""
+	log_file_nm = ""
+	functions, log_wrap_functions = [], []
+	include_headers, libraries = [], []
 	mode = ""
 	with (open(filename, 'r')) as f:
 		for line in f:
 			if (line.strip("\n") == "FUNCTIONS" or line.strip("\n") == "LIBRARY"\
-						 or line.strip("\n") == "LOG_MPI_REDUCE"\
 						 or line.strip("\n") == "LOG_MPI_FINALIZE"\
 						 or line.strip("\n") == "LOG_FILE"\
-						 or line.strip("\n") == "MAKE_LOG"\
-						 or line.strip("\n") == "INCLUDE_HEADERS"
+						 or line.strip("\n") == "LOG_ATEXIT"\
+						 or line.strip("\n") == "INCLUDE_HEADERS"\
 						 or line.strip("\n") == "LOG_WRAP_FUNCTIONS"): 
 				mode = line.strip("\n");
 				continue	
@@ -56,32 +55,30 @@ def read_config_file(filename):
 				functions.append(func(line))
 			elif mode=="LIBRARY":
 				libraries.append(line.strip("\n"))
-			elif mode == "LOG_MPI_REDUCE":
-				log_mpi_reduce_fn = line.strip("\n")
 			elif mode == "LOG_MPI_FINALIZE":
 				log_mpi_finalize_fn = line.strip("\n");
 			elif mode == "LOG_FILE":
 				log_file_nm = line.strip("\n");
-			elif mode == "MAKE_LOG":
-				make_log_fn = line.strip("\n");
+			elif mode == "LOG_ATEXIT":
+				log_atexit_fn = line.strip("\n");
 			elif mode == "INCLUDE_HEADERS":
 				include_headers.append(line.strip("\n"));
 			elif mode == "LOG_WRAP_FUNCTIONS":
 				log_wrap_functions.append(line.strip("\n"))
-	log_mpi_reduce_fn, log_mpi_finalize_fn, make_log_fn = map(addsemicolon,\
-			 [log_mpi_reduce_fn, log_mpi_finalize_fn, make_log_fn])
+	log_mpi_finalize_fn, log_atexit_fn = map(addparasemicolon,\
+			 [log_mpi_finalize_fn, log_atexit_fn])
 	if len(log_wrap_functions) != len(functions):
 		log_wrap_functions.extend([""]*(len(functions)-len(log_wrap_functions)))
-	return functions, log_wrap_functions, libraries, log_mpi_reduce_fn, log_mpi_finalize_fn,\
-			log_file_nm, make_log_fn, include_headers
+	return functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
+			log_file_nm, log_atexit_fn, include_headers
 
 
 def main(modulename):
-	functions, log_wrap_functions , libraries, log_mpi_reduce_fn, log_mpi_finalize_fn,\
-				log_file_nm, make_log_fn, include_headers \
+	functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
+				log_file_nm, log_atexit_fn, include_headers \
 						 = read_config_file(modulename+".config")
 	#write_gotcha_file("gotcha_"+modulename+".c", functions, modulename)
-	generate_log_init(make_log_fn, log_mpi_reduce_fn, log_mpi_finalize_fn, log_file_nm)
+	generate_log_init(log_atexit_fn, log_mpi_finalize_fn, log_file_nm)
 	generate_wrapper("../wrapper.c", functions, modulename, log_file_nm, include_headers,\
 									log_wrap_functions)
 	generate_makefile(modulename)
