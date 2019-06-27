@@ -3,10 +3,13 @@
 
 ## Dependencies
 * [Gotcha](https://gotcha.readthedocs.io/en/latest/#). Gotcha is an API that provides function wrapping.
+
 If you want to use scripts in example\_logfile/ then you need
+
 * JANSSON 2.12 or higher
 * openssl-1.1.0a or higher 
 * [rabbitmq-c](https://github.com/alanxz/rabbitmq-c) 0.9.0 or higher 
+
 On cori you can load these using
 
 ```

@@ -1,3 +1,4 @@
+#TODO: maybe remove json/rabbitmq depencies
 def generate_makefile(modulename):
 	'''
 	#FUTURE TODO: Add header string as well

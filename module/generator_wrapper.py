@@ -50,7 +50,7 @@ static int dissectio_Orig_Func (int param){
 		#write static wrapper
                 f.write("int" + " __wrap_" + function.name + "(" + function.arg_string + "){\n\n")
 		f.write("\tpthread_mutex_lock(&log_mutex);\n")
-		f.write("\tlog_init();\n")
+		f.write("\t_log_init();\n")
 		if log_funcs:
 			f.write("\t"+ log_funcs + "(" + function.string_param_names + ");\n")
 		f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
@@ -69,7 +69,7 @@ static int dissectio_Orig_Func (int param){
 				function.wrapee+"(" + function.string_param_names + ");\n\n")
                 
 		f.write("\tpthread_mutex_lock(&log_mutex);\n")
-		f.write("\tlog_init();\n")
+		f.write("\t_log_init();\n")
 		if log_funcs:
                 	f.write("\t"+ log_funcs +"(" + function.string_param_names + ");\n")
                 f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")

@@ -46,7 +46,7 @@ void mpi_atexit()
 }
 
 
-void log_init()
+void _log_init()
 { 
   /* If its using MPI call mpi_atexit */
   if (!flag_isparallel)
@@ -71,16 +71,16 @@ void log_init()
 """ % (str_log_atexit, str_log_MPI_finalize)
 	with open("../log_init.c", "w") as fl_out:
 		fl_out.write(c_str)
-	str_include_logfl = ""
+	str_logfl = ""
 	if fl_nm:
-		str_include_logfl = "#include \"%s.h\"" % fl_nm
+		str_logfl = "#include \"%s.h\"" % fl_nm
 	h_str = """#include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
 %s
 
-void log_init();
-"""%(str_include_logfl)
+void _log_init();
+"""%(str_logfl)
 	with open("../log_init.h", "w") as fl_out:
 		fl_out.write(h_str);
 

@@ -43,6 +43,8 @@ def read_config_file(filename):
 	mode = ""
 	with (open(filename, 'r')) as f:
 		for line in f:
+			if not line.strip("\n"):
+				continue
 			if (line.strip("\n") == "FUNCTIONS" or line.strip("\n") == "LIBRARY"\
 						 or line.strip("\n") == "LOG_MPI_FINALIZE"\
 						 or line.strip("\n") == "LOG_FILE"\
@@ -82,7 +84,6 @@ def main(modulename):
 	generate_wrapper("../wrapper.c", functions, modulename, log_file_nm, include_headers,\
 									log_wrap_functions)
 	generate_makefile(modulename)
-	
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:
