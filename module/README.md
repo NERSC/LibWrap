@@ -15,7 +15,7 @@ The tool allows user to extract any infomation/statistics from the functions tha
 
 The tool extracts some default information of the job and logs it using JSON. To include your custom information in the logs, user should define a function (function name goes in MAKE\_LOG) to translate the any gathered statistics in json format. The tool has a json\_t object named root. The user should update this root object in the MAKE\_LOG function with her information. 
 
-### MPI
+#### MPI
 To reduce overhead of logging, the tool logs only from one rank. So any information gathered in other ranks should be gathered at the rank 0. User should define a new function that does the reduce using MPI\_COMM\_WORLD communicator at rank 0. The name of this function should go in LOG\_MPI\_FUNCTION. If the user wants to delete the data structures at the end of MPI created during the program, new function should be provided with function name in LOG\_MPI\_FINALIZE.
 
 *Note* - All the functions user defined functions should reside in same LOG\_FILE and except log functions all will have void return type and no parameters. 

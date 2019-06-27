@@ -1,9 +1,15 @@
-## wrapper library
+## Wrapper library
 * wrapper library that can be used to wrap any function from any library
 
-## How to use
+## Dependencies
+* [Gotcha](https://gotcha.readthedocs.io/en/latest/#). Gotcha is an API that provides function wrapping.
+* JANSSON 2.12 or higher
+* openssl-1.1.0a or higher 
+* [rabbitmq-c](https://github.com/alanxz/rabbitmq-c) 0.9.0 or higher 
+ 
 
-* To get started go generator/. You should create a configuration file with functions that needs to be wrap and other necessary parameters. More details in generator/
+## How to use
+* * To get started go module/. You should create a configuration file with functions that needs to be wrap and other necessary parameters. More details in module/
 
 * Once a configuration file has been created run ``python parser yourmodulename``. This will create necessary files and Makefile in $libwrap home. 
 
@@ -17,6 +23,3 @@ make
 ```
 * This step would create yourmodulename.so and yourmodule.a. You should now link the library to your application when executing for example LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp. See test/ for more examples.
 
-## [Gotcha](https://gotcha.readthedocs.io/en/latest/#) is an API that provides function wrapping.
-
-## [Gotcha-Tracer](https://github.com/llnl/GOTCHA-tracer) is a Python tool for creating tracer with Gotcha
