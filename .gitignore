@@ -10,6 +10,7 @@
 !module/
 !example_usrwrap/
 !example_usrwrap/hdf5
+!example_usrwrap/posix
 !example_outlog/
 module/rmgenfls.sh
 example_usrwrap/rmusrwrap.sh
