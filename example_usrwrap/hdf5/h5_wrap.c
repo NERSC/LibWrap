@@ -1,4 +1,4 @@
-#include "log.h"
+#include "h5_wrap.h"
 
 struct api_counts loc_parallel_api_counts, serial_api_counts, glo_parallel_api_counts;
 
@@ -15,49 +15,49 @@ long long glo_parallel_write_data = 0;
 struct api_counts serial_api_counts;
 struct api_counts parallel_api_counts;
 
-json_t *root; 
+json_t *json_root; 
 struct log_info job_log;
 
 
 void crt_json_log()
 {
-  root = json_object();
-  json_object_set_new(root, "category", json_string("MODS") );
-  json_object_set_new(root, "name", json_string("gotchaio-tracer") );
-  json_object_set_new(root, "uid", json_integer(job_log.uid) );
-  json_object_set_new(root, "nersc host", json_string(job_log.host));
-  json_object_set_new(root, "hostname", json_string(job_log.hostname));
-  json_object_set_new(root, "user", json_string(job_log.user));
-  json_object_set_new(root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
-  json_object_set_new(root, "slurm job account", json_string(job_log.slurm_job_account));
-  json_object_set_new(root, "nodetype", json_string(job_log.nodetype));
+  json_root = json_object();
+  json_object_set_new(json_root, "category", json_string("MODS") );
+  json_object_set_new(json_root, "name", json_string("gotchaio-tracer") );
+  json_object_set_new(json_root, "uid", json_integer(job_log.uid) );
+  json_object_set_new(json_root, "nersc host", json_string(job_log.host));
+  json_object_set_new(json_root, "hostname", json_string(job_log.hostname));
+  json_object_set_new(json_root, "user", json_string(job_log.user));
+  json_object_set_new(json_root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
+  json_object_set_new(json_root, "slurm job account", json_string(job_log.slurm_job_account));
+  json_object_set_new(json_root, "nodetype", json_string(job_log.nodetype));
   
   //TODO: JANSSON does not handle unsigned int
-  json_object_set_new( root, "category", json_string("MODS") );
-  json_object_set_new( root, "name", json_string("gotchaio-tracer") );
+  json_object_set_new( json_root, "category", json_string("MODS") );
+  json_object_set_new( json_root, "name", json_string("gotchaio-tracer") );
   /* Serial Counts */
-  json_object_set_new(root, "serial fcreate count", json_integer(serial_api_counts.fcreate_count));
-  json_object_set_new(root, "serial fopen count", json_integer(serial_api_counts.fopen_count));
-  json_object_set_new(root, "serial acreate count", json_integer(serial_api_counts.acreate_count));
-  json_object_set_new(root, "serial aopen count", json_integer(serial_api_counts.aopen_count));
-  json_object_set_new(root, "serial aread count", json_integer(serial_api_counts.aread_count));
-  json_object_set_new(root, "serial awrite count", json_integer(serial_api_counts.awrite_count));
-  json_object_set_new(root, "serial dcreate count", json_integer(serial_api_counts.dcreate_count));
-  json_object_set_new(root, "serial dopen count", json_integer(serial_api_counts.dopen_count));
-  json_object_set_new(root, "serial dread count", json_integer(serial_api_counts.dread_count));
-  json_object_set_new(root, "serial dwrite count", json_integer(serial_api_counts.dwrite_count));
-  json_object_set_new(root, "serial gcreate count", json_integer(serial_api_counts.gcreate_count));
-  json_object_set_new(root, "serial gopen count", json_integer(serial_api_counts.gopen_count));
+  json_object_set_new(json_root, "serial fcreate count", json_integer(serial_api_counts.fcreate_count));
+  json_object_set_new(json_root, "serial fopen count", json_integer(serial_api_counts.fopen_count));
+  json_object_set_new(json_root, "serial acreate count", json_integer(serial_api_counts.acreate_count));
+  json_object_set_new(json_root, "serial aopen count", json_integer(serial_api_counts.aopen_count));
+  json_object_set_new(json_root, "serial aread count", json_integer(serial_api_counts.aread_count));
+  json_object_set_new(json_root, "serial awrite count", json_integer(serial_api_counts.awrite_count));
+  json_object_set_new(json_root, "serial dcreate count", json_integer(serial_api_counts.dcreate_count));
+  json_object_set_new(json_root, "serial dopen count", json_integer(serial_api_counts.dopen_count));
+  json_object_set_new(json_root, "serial dread count", json_integer(serial_api_counts.dread_count));
+  json_object_set_new(json_root, "serial dwrite count", json_integer(serial_api_counts.dwrite_count));
+  json_object_set_new(json_root, "serial gcreate count", json_integer(serial_api_counts.gcreate_count));
+  json_object_set_new(json_root, "serial gopen count", json_integer(serial_api_counts.gopen_count));
   /* Parallel Counts */
-  json_object_set_new(root, "parallel fcreate count", json_integer(glo_parallel_api_counts.fcreate_count));
-  json_object_set_new(root, "parallel fopen count", json_integer(glo_parallel_api_counts.fopen_count));
-  json_object_set_new(root, "parallel dread count", json_integer(glo_parallel_api_counts.dread_count));
-  json_object_set_new(root, "parallel dwrite count", json_integer(glo_parallel_api_counts.dwrite_count));
+  json_object_set_new(json_root, "parallel fcreate count", json_integer(glo_parallel_api_counts.fcreate_count));
+  json_object_set_new(json_root, "parallel fopen count", json_integer(glo_parallel_api_counts.fopen_count));
+  json_object_set_new(json_root, "parallel dread count", json_integer(glo_parallel_api_counts.dread_count));
+  json_object_set_new(json_root, "parallel dwrite count", json_integer(glo_parallel_api_counts.dwrite_count));
   /* Data Read/Write */ 
-  json_object_set_new(root, "total serial dataset read size", json_integer(serial_read_data));
-  json_object_set_new(root, "total serial dataset write size", json_integer(serial_write_data));
-  json_object_set_new(root, "total parallel dataset read size", json_integer(glo_parallel_read_data));
-  json_object_set_new(root, "total parallel dataset write size", json_integer(glo_parallel_write_data));
+  json_object_set_new(json_root, "total serial dataset read size", json_integer(serial_read_data));
+  json_object_set_new(json_root, "total serial dataset write size", json_integer(serial_write_data));
+  json_object_set_new(json_root, "total parallel dataset read size", json_integer(glo_parallel_read_data));
+  json_object_set_new(json_root, "total parallel dataset write size", json_integer(glo_parallel_write_data));
   
   return ;
 }
@@ -113,7 +113,7 @@ void log_atexit()
 {
   extrct_job_info(&job_log);
   crt_json_log();
-  send_to_mods();
+  send_to_mods(json_root);
   return ;	
 }
 
@@ -129,7 +129,7 @@ void mpi_finalize_cb()
   {
     extrct_job_info(&job_log);
     crt_json_log();
-    send_to_mods();
+    send_to_mods(json_root);
   }
   /* Clean up */
   

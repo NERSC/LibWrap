@@ -8,7 +8,8 @@
 !*.md
 !test/
 !module/
-!example_logfile/
-!example_logfile/hdf5
+!example_usrwrap/
+!example_usrwrap/hdf5
+!example_outlog/
 module/rmgenfls.sh
-module/rmusrwrap.sh
+example_usrwrap/rmusrwrap.sh
