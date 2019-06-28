@@ -12,5 +12,6 @@
 !example_usrwrap/hdf5
 !example_usrwrap/posix
 !example_outlog/
+!example_outlog/MODS
 module/rmgenfls.sh
 example_usrwrap/rmusrwrap.sh
