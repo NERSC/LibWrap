@@ -1,5 +1,4 @@
-#TODO: maybe remove json/rabbitmq depencies
-def generate_makefile(modulename):
+def generate_makefile(modulename, libraries_in_make, includes_in_make):
 	'''
 	#FUTURE TODO: Add header string as well
 	str_libs = ""
@@ -12,16 +11,14 @@ def generate_makefile(modulename):
 	str_makefile = "TARGET = lwrap%s.so\n" % modulename
 	str_makefile = "%s %s" %(str_makefile, 
 """
-#JANSSON=$(HOME)/projectcode/jansson-2.12
 #GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
-Rabbitmq_PATH = /usr/common/software/rabbitmq/0.9.0
 CC = cc
 CFLAGS = -fPIC 
-
-LIBRARIES = -L$(JANSSON)/install/lib -L/$(GOTCHA)/lib64 -L/global/common/cori/software/openssl/1.1.0a/hsw/lib -l rabbitmq -l jansson -l ssl -l crypto -l dl 
-INCLUDES = -I /usr/include -I $(Rabbitmq_PATH)/install/include -I$(GOTCHA)/include -I$(JANSSON)/install/include 
+""" + 
+"\nLIBRARIES = -L/$(GOTCHA)/lib64 %s\nINCLUDES = -I/usr/include -I$(GOTCHA)/include %s\n"\
+				 % (libraries_in_make, includes_in_make)
++ """
 .PHONY: default all clean
-
 default: $(TARGET)
 all: default
 
@@ -39,6 +36,6 @@ $(TARGET): $(OBJECTS)
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
-"""  )
+""" )
 	with open("../Makefile", "w") as f:
 		f.write(str_makefile)	

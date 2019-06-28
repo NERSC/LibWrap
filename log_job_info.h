@@ -20,7 +20,7 @@ struct log_info{
   int uid;
 };
 
-void extrct_job_info(struct log_info job_log);
+void extrct_job_info(struct log_info *job_log);
 void reset_job_log();
 
 #endif

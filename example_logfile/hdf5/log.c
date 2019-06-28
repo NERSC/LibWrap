@@ -111,7 +111,7 @@ void log_MPI_reduce()
 //TODO: atexit should be probably different
 void log_atexit()
 {
-  extrct_job_info(job_log);
+  extrct_job_info(&job_log);
   crt_json_log();
   send_to_mods();
   return ;	
@@ -127,7 +127,7 @@ void mpi_finalize_cb()
   MPI_Comm_rank(comm, &world_rank);
   if (world_rank == 0)
   {
-    extrct_job_info(job_log);
+    extrct_job_info(&job_log);
     crt_json_log();
     send_to_mods();
   }
@@ -208,7 +208,7 @@ hsize_t get_dataset_size(void* dset, hid_t mem_type_id, hid_t mem_space_id)
 }
 
 
-void H5Fcreate_log(const char *name, unsigned flags, hid_t fcpl_id, hid_t fapl_id)
+void H5Fcreate_mywrap(const char *name, unsigned flags, hid_t fcpl_id, hid_t fapl_id)
 {
   if (is_mpi(fapl_id)){
     mpi_log(fapl_id);
@@ -222,7 +222,7 @@ void H5Fcreate_log(const char *name, unsigned flags, hid_t fcpl_id, hid_t fapl_i
 }
 
 
-void H5Fopen_log(const char *name, unsigned flags, hid_t fapl_id)
+void H5Fopen_mywrap(const char *name, unsigned flags, hid_t fapl_id)
 {
   if (is_mpi(fapl_id)){
     mpi_log(fapl_id);
@@ -236,7 +236,7 @@ void H5Fopen_log(const char *name, unsigned flags, hid_t fapl_id)
 }
 
 /* Assumes serial */
-void H5Fclose_log(hid_t attr_id)
+void H5Fclose_mywrap(hid_t attr_id)
 {
   serial_log();
   serial_api_counts.fclose_count++;
@@ -244,7 +244,7 @@ void H5Fclose_log(hid_t attr_id)
 }
 
 /* Assumes serial */
-void H5Acreate2_log(hid_t loc_id, const char *attr_name, hid_t type_id, hid_t 
+void H5Acreate2_mywrap(hid_t loc_id, const char *attr_name, hid_t type_id, hid_t 
 					space_id, hid_t acpl_id, hid_t aapl_id)
 {
   serial_log();
@@ -253,7 +253,7 @@ void H5Acreate2_log(hid_t loc_id, const char *attr_name, hid_t type_id, hid_t
 }
 
 /* Assumes serial */
-void H5Aopen_log(hid_t obj_id, const char *attr_name, hid_t aapl_id)
+void H5Aopen_mywrap(hid_t obj_id, const char *attr_name, hid_t aapl_id)
 {
   serial_log();
   serial_api_counts.aopen_count++;
@@ -261,7 +261,7 @@ void H5Aopen_log(hid_t obj_id, const char *attr_name, hid_t aapl_id)
 }
 
 /* Assumes serial */
-void H5Awrite_log(hid_t attr_id, hid_t mem_type_id, const void *buf)
+void H5Awrite_mywrap(hid_t attr_id, hid_t mem_type_id, const void *buf)
 {
   serial_log();
   serial_api_counts.awrite_count++;
@@ -269,7 +269,7 @@ void H5Awrite_log(hid_t attr_id, hid_t mem_type_id, const void *buf)
 }
 
 /* Assumes serial */
-void H5Aread_log(hid_t attr_id, hid_t mem_type_id, void *buf)
+void H5Aread_mywrap(hid_t attr_id, hid_t mem_type_id, void *buf)
 {
   serial_log();
   serial_api_counts.aread_count++;
@@ -277,7 +277,7 @@ void H5Aread_log(hid_t attr_id, hid_t mem_type_id, void *buf)
 }
 
 /* Assumes serial */
-void H5Aclose_log(hid_t attr_id)
+void H5Aclose_mywrap(hid_t attr_id)
 {
   serial_log();
   serial_api_counts.aclose_count++;
@@ -285,7 +285,7 @@ void H5Aclose_log(hid_t attr_id)
 }
 
 /* Assumes serial */
-void H5Dcreate2_log(hid_t loc_id, const char *name, hid_t dtype_id, hid_t space_id,
+void H5Dcreate2_mywrap(hid_t loc_id, const char *name, hid_t dtype_id, hid_t space_id,
 					 hid_t lcpl_id, hid_t dcpl_id, hid_t dapl_id)
 {
   serial_log();
@@ -295,7 +295,7 @@ void H5Dcreate2_log(hid_t loc_id, const char *name, hid_t dtype_id, hid_t space_
 
 
 /* Assumes serial */
-void H5Dopen2_log(const char *name, unsigned flags, hid_t dapl_id)
+void H5Dopen2_mywrap(const char *name, unsigned flags, hid_t dapl_id)
 {
   serial_log();
   serial_api_counts.dopen_count++;
@@ -303,7 +303,7 @@ void H5Dopen2_log(const char *name, unsigned flags, hid_t dapl_id)
 }
 
 
-void H5Dwrite_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
+void H5Dwrite_mywrap(void *dset, hid_t mem_type_id, hid_t mem_space_id,
 		hid_t file_space_id, hid_t plist_id, void *buf)
 {
   hsize_t dwrite_size = get_dataset_size(dset, mem_type_id, mem_space_id);
@@ -321,7 +321,7 @@ void H5Dwrite_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
 }
 
 
-void H5Dread_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
+void H5Dread_mywrap(void *dset, hid_t mem_type_id, hid_t mem_space_id,
 		hid_t file_space_id, hid_t plist_id, void *buf)
 {
   hsize_t dread_size = get_dataset_size(dset, mem_type_id, mem_space_id);
@@ -339,7 +339,7 @@ void H5Dread_log(void *dset, hid_t mem_type_id, hid_t mem_space_id,
 }
 
 
-void H5Dclose_log(hid_t dataset_id)
+void H5Dclose_mywrap(hid_t dataset_id)
 {
   serial_log();
   serial_api_counts.dclose_count++;
@@ -347,7 +347,7 @@ void H5Dclose_log(hid_t dataset_id)
 }
 
 /* Assumes serial */
-void H5Gcreate2_log(hid_t loc_id, const char *name, hid_t lcpl_id, hid_t gcpl_id, hid_t gapl_id)
+void H5Gcreate2_mywrap(hid_t loc_id, const char *name, hid_t lcpl_id, hid_t gcpl_id, hid_t gapl_id)
 {
   serial_log();
   serial_api_counts.gcreate_count++;
@@ -355,7 +355,7 @@ void H5Gcreate2_log(hid_t loc_id, const char *name, hid_t lcpl_id, hid_t gcpl_id
 }
 
 /* Assumes serial */
-void H5Gopen2_log(hid_t loc_id, const char * name, hid_t gapl_id)
+void H5Gopen2_mywrap(hid_t loc_id, const char * name, hid_t gapl_id)
 {
   serial_log();
   serial_api_counts.aopen_count++;
@@ -363,7 +363,7 @@ void H5Gopen2_log(hid_t loc_id, const char * name, hid_t gapl_id)
 }
 
 /* Assumes serial */
-void H5Gclose_log(hid_t group_id)
+void H5Gclose_mywrap(hid_t group_id)
 {
   serial_log();
   serial_api_counts.aclose_count++;

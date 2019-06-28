@@ -10,5 +10,5 @@
 !module/
 !example_logfile/
 !example_logfile/hdf5
-example_logfile/delusrlog.sh
 module/rmgenfls.sh
+module/rmusrwrap.sh

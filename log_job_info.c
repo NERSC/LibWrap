@@ -19,16 +19,16 @@ void reset_job_log()
 }
 
 //TODO: add job id
-void extrct_job_info(struct log_info job_log)
+void extrct_job_info(struct log_info *job_log)
 {
   //unsigned long long ts = (unsigned long)time(NULL);
   //time_t rtime;
   //time(&rtime);
   //struct tm * info = localtime(&rtime);
-  job_log.uid = getuid(); 
+  job_log->uid = getuid(); 
   //job_log.first_hdf5api_time = asctime(info); 
-  job_log.host = getenv("NERSC_HOST");
-  job_log.user = getenv("USER");
+  job_log->host = getenv("NERSC_HOST");
+  job_log->user = getenv("USER");
   //TODO: This seems to take time. check.
   //char hostnamebuffer[1024];
   //gethostname(hostnamebuffer, sizeof(hostnamebuffer));
@@ -36,12 +36,12 @@ void extrct_job_info(struct log_info job_log)
   //strcpy(job_log.hostname, hostnamebuffer);
   
   //job_log.slurm_job_id = ()
-  job_log.slurm_job_num_nodes = getenv("SLURM_JOB_NUM_NODES");
-  job_log.slurm_job_account = getenv("SLURM_JOB_ACCOUNT");
+  job_log->slurm_job_num_nodes = getenv("SLURM_JOB_NUM_NODES");
+  job_log->slurm_job_account = getenv("SLURM_JOB_ACCOUNT");
   
   // This is part to get the nodetype
-  job_log.nodetype="None";  
-  if (strcmp(job_log.host, "cori")==0){
+  job_log->nodetype="None";  
+  if (strcmp(job_log->host, "cori")==0){
     FILE *fptr = fopen("/proc/cpuinfo", "r");
     if (fptr == NULL)
       fprintf(stderr, "failed to open /proc/cpuinfo\n");
@@ -53,9 +53,9 @@ void extrct_job_info(struct log_info job_log)
       strncpy(tempstr, line, 10);
       if (strcmp(tempstr, "model name")==0){
         if (strstr(line, "Phi")!=NULL)
-          job_log.nodetype = "KNL";
+          job_log->nodetype = "KNL";
         else {
-          job_log.nodetype = "Haswell";
+          job_log->nodetype = "Haswell";
         }
         break; 
       }
