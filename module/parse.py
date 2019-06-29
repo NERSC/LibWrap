@@ -1,8 +1,20 @@
 import sys
+import os
+
+sys.path.append('./module')
 
 from generator_wrapper import generate_wrapper
 from generator_loginit import generate_log_init
 from generator_makefile import generate_makefile
+from generator_joblog import generate_job_log_info
+ 
+
+
+def writable(dir_nm, fl_nm):
+	if not os.path.exists(dir_nm):
+		os.mkdir(dir_nm)
+	return os.path.join(dir_nm, fl_nm)
+
 
 class func:
 	def __init__(self, prototype):
@@ -42,6 +54,7 @@ def read_config_file(filename):
 	include_headers, libraries = [], []
 	lib_in_make, inclds_in_make = "", ""
 	mode = ""
+	out_dir = ""
 	with (open(filename, 'r')) as f:
 		for line in f:
 			if line.startswith("#"): continue
@@ -53,7 +66,8 @@ def read_config_file(filename):
 						 or line.strip("\n") == "LOG_ATEXIT"\
 						 or line.strip("\n") == "INCLUDE_HEADERS"\
 						 or line.strip("\n") == "LIBRARIES_IN_MAKE"\
-						 or line.strip("\n") == "INCLUDES_IN_MAKE"): 
+						 or line.strip("\n") == "INCLUDES_IN_MAKE" 
+						 or line.strip("\n") == "OUTPUT_DIR"):
 				mode = line.strip("\n");
 				continue	
 			if mode=="FUNCTIONS":
@@ -83,25 +97,33 @@ def read_config_file(filename):
 				lib_in_make = line.strip("\n")
 			elif mode == "INCLUDES_IN_MAKE":
 				inclds_in_make = line.strip("\n")
+			elif mode == "OUTPUT_DIR":
+				out_dir = line.strip("\n")
 	log_mpi_finalize_fn, log_atexit_fn = map(addparasemicolon,\
 			 [log_mpi_finalize_fn, log_atexit_fn])
 	if len(log_wrap_functions) != len(functions):
 		log_wrap_functions.extend([""]*(len(functions)-len(log_wrap_functions)))
 	return functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
 			log_file_nm, log_atexit_fn, include_headers, lib_in_make,\
-								inclds_in_make
+							inclds_in_make, out_dir
 
 
 def main(modulename):
+	if modulename.endswith(".config"):
+		filename = modulename
+		modulename = modulename.replace(".config","") 
+	else:
+		filename = modulename + ".config"
 	functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
 				log_file_nm, log_atexit_fn, include_headers, \
-				lib_in_make, inclds_in_make \
-						 = read_config_file(modulename+".config")
-	#write_gotcha_file("gotcha_"+modulename+".c", functions, modulename)
-	generate_log_init(log_atexit_fn, log_mpi_finalize_fn, log_file_nm)
-	generate_wrapper("../wrapper.c", functions, modulename, log_file_nm, include_headers,\
+				lib_in_make, inclds_in_make, out_dir \
+						 = read_config_file(filename)
+	generate_log_init(writable(out_dir, "log_init"), log_atexit_fn, log_mpi_finalize_fn, log_file_nm)
+	generate_wrapper(writable(out_dir, "wrapper.c"), functions, modulename, log_file_nm, include_headers,\
 									log_wrap_functions)
-	generate_makefile(modulename, lib_in_make, inclds_in_make)
+	generate_makefile(writable(out_dir, "Makefile"), modulename, lib_in_make, inclds_in_make)
+	generate_job_log_info(writable(out_dir, "log_job_info"))
+
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:

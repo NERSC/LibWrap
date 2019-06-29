@@ -1,4 +1,5 @@
-#include "log_job_info.h"
+def generate_job_log_info(fl_nm):
+	c_str ="""#include "log_job_info.h"
 
 struct log_info job_log; 
 
@@ -44,7 +45,7 @@ void extrct_job_info(struct log_info *job_log)
   if (strcmp(job_log->host, "cori")==0){
     FILE *fptr = fopen("/proc/cpuinfo", "r");
     if (fptr == NULL)
-      fprintf(stderr, "failed to open /proc/cpuinfo\n");
+      fprintf(stderr, "failed to open /proc/cpuinfo\\n");
     char* line=NULL;
     size_t len;
     ssize_t read;
@@ -69,5 +70,41 @@ void extrct_job_info(struct log_info *job_log)
   else
     job_log.is_compute = 0;
   */
-  return job_log;
+  return ;
 }
+
+"""
+
+	with open("%s.c" % fl_nm, "w") as fl_out:
+		fl_out.write(c_str)
+
+	h_str = """#ifndef LOG_JOB_INFO_H_INCLUDED
+#define LOG_JOB_INFO_H_INCLUDED
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+
+struct log_info{
+  char* host;
+  char* user;
+  char* hostname;
+  char* slurm_job_id;
+  char* slurm_job_num_nodes;
+  char* slurm_job_account;
+  char* nodetype;
+  int is_compute;
+  int uid;
+};
+
+void extrct_job_info(struct log_info *job_log);
+void reset_job_log();
+
+#endif
+"""
+
+	with open("%s.h" % fl_nm, "w") as fl_out:
+		fl_out.write(h_str)

@@ -61,20 +61,23 @@ static int dissectio_Orig_Func (int param){
 		#write shared wrapper
                 f.write("static " + function.ret_type + " " + function.wraper + 
 						"(" + function.arg_string + "){\n\n")
-		f.write("\t" + function.name + "_fptr" +" " +function.wrapee + 
-						" = " + "(" + function.name + "_fptr)" 
-						+ "gotcha_get_wrappee(" + function.name 
-								+ "_handle);\n\n" )
-		f.write("\t" + function.ret_type + " " + "result" + "=" + 
-				function.wrapee+"(" + function.string_param_names + ");\n\n")
                 
 		f.write("\tpthread_mutex_lock(&log_mutex);\n")
 		f.write("\t_log_init();\n")
 		if log_funcs:
                 	f.write("\t"+ log_funcs +"(" + function.string_param_names + ");\n")
                 f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")
+		
+		
+		f.write("\t" + function.name + "_fptr" +" " +function.wrapee + 
+						" = " + "(" + function.name + "_fptr)" 
+						+ "gotcha_get_wrappee(" + function.name 
+								+ "_handle);\n\n" )
+		f.write("\t" + function.ret_type + " " + "result" + "=" + 
+				function.wrapee+"(" + function.string_param_names + ");\n\n")
 		f.write("\treturn result;\n")
 		f.write("}\n\n\n")
+		
 		'''
 		#write log routine
 		f.write("void "+ function.name + "_log(" + function.arg_string + "){\n")

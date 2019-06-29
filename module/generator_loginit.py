@@ -1,4 +1,4 @@
-def generate_log_init(str_log_atexit, str_log_MPI_finalize, fl_nm):
+def generate_log_init(fl_nm, str_log_atexit, str_log_MPI_finalize, usr_fl_nm):
 
 	c_str = """#include "log_init.h"
 
@@ -69,11 +69,11 @@ void _log_init()
   }
 }
 """ % (str_log_atexit, str_log_MPI_finalize)
-	with open("../log_init.c", "w") as fl_out:
+	with open("%s.c"%fl_nm, "w") as fl_out:
 		fl_out.write(c_str)
 	str_logfl = ""
 	if fl_nm:
-		str_logfl = "#include \"%s.h\"" % fl_nm
+		str_logfl = "#include \"%s.h\"" % usr_fl_nm
 	h_str = """#include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
@@ -81,6 +81,6 @@ void _log_init()
 
 void _log_init();
 """%(str_logfl)
-	with open("../log_init.h", "w") as fl_out:
+	with open("%s.h" % fl_nm, "w") as fl_out:
 		fl_out.write(h_str);
 

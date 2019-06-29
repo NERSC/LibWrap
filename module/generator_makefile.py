@@ -1,4 +1,4 @@
-def generate_makefile(modulename, libraries_in_make, includes_in_make):
+def generate_makefile(fl_nm, modulename, libraries_in_make, includes_in_make):
 	'''
 	#FUTURE TODO: Add header string as well
 	str_libs = ""
@@ -11,7 +11,6 @@ def generate_makefile(modulename, libraries_in_make, includes_in_make):
 	str_makefile = "TARGET = lwrap%s.so\n" % modulename
 	str_makefile = "%s %s" %(str_makefile, 
 """
-#GOTCHA=/global/homes/j/jialin/gotcha/gotcha/install
 CC = cc
 CFLAGS = -fPIC 
 """ + 
@@ -37,5 +36,5 @@ clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
 """ )
-	with open("../Makefile", "w") as f:
+	with open(fl_nm, "w") as f:
 		f.write(str_makefile)	
