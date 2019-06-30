@@ -14,8 +14,10 @@ void serial_atexit()
   }
   return ;
 }
-
-
+""" % (str_log_atexit )
+	if str_log_MPI_finalize:
+		mpi_cd_str = \
+"""
 static int mpi_log_cb(MPI_Comm comm, int keyval, void *attr_val, int *flag)
 {
   %s
@@ -62,13 +64,26 @@ void _log_init()
       flag_atexit=1;
     }
   }
-  if (!flag_atexit)
+ 
+""" % str_log_MPI_finalize
+		mpi_incl = "#include <mpi.h>"
+	else: 
+		mpi_cd_str = \
+"""
+
+void _log_init()
+{
+"""
+		mpi_incl = ""
+	c_str = "%s%s%s" % (c_str, mpi_cd_str, 
+"""
+ if (!flag_atexit)
   {
     atexit(serial_atexit);
     flag_atexit=1;
   }
 }
-""" % (str_log_atexit, str_log_MPI_finalize)
+""" )
 	with open("%s.c"%fl_nm, "w") as fl_out:
 		fl_out.write(c_str)
 	str_logfl = ""
@@ -76,11 +91,11 @@ void _log_init()
 		str_logfl = "#include \"%s.h\"" % usr_fl_nm
 	h_str = """#include <stdlib.h>
 #include <stdio.h>
-#include <mpi.h>
+%s
 %s
 
 void _log_init();
-"""%(str_logfl)
+"""%(mpi_incl, str_logfl)
 	with open("%s.h" % fl_nm, "w") as fl_out:
 		fl_out.write(h_str);
 

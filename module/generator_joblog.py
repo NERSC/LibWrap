@@ -30,13 +30,12 @@ void extrct_job_info(struct log_info *job_log)
   //job_log.first_hdf5api_time = asctime(info); 
   job_log->host = getenv("NERSC_HOST");
   job_log->user = getenv("USER");
-  //TODO: This seems to take time. check.
-  //char hostnamebuffer[1024];
-  //gethostname(hostnamebuffer, sizeof(hostnamebuffer));
-  //puts(hostnamebuffer);
-  //strcpy(job_log.hostname, hostnamebuffer);
+  char hostnamebuffer[1024];
+  gethostname(hostnamebuffer, sizeof(hostnamebuffer));
+  job_log->hostname = (char *) malloc(100);
+  strcpy(job_log->hostname, hostnamebuffer);
   
-  //job_log.slurm_job_id = ()
+  job_log->slurm_job_id = getenv("SLURM_JOB_ID");
   job_log->slurm_job_num_nodes = getenv("SLURM_JOB_NUM_NODES");
   job_log->slurm_job_account = getenv("SLURM_JOB_ACCOUNT");
   
@@ -63,13 +62,11 @@ void extrct_job_info(struct log_info *job_log)
     }
     fclose(fptr);
   }
-  //TODO: get this working
-  /*  
-  if (strcmp(job_log.hostname, "nid")==0)
-    job_log.is_compute = 1;
+  if (strncmp(job_log->hostname, "nid", 3)==0)
+    job_log->is_compute = 1;
   else
-    job_log.is_compute = 0;
-  */
+    job_log->is_compute = 0;
+  
   return ;
 }
 

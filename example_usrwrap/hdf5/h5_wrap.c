@@ -31,6 +31,8 @@ void crt_json_log()
   json_object_set_new(json_root, "slurm number of nodes", json_string(job_log.slurm_job_num_nodes));
   json_object_set_new(json_root, "slurm job account", json_string(job_log.slurm_job_account));
   json_object_set_new(json_root, "nodetype", json_string(job_log.nodetype));
+  json_object_set_new(json_root, "is_compute_node", json_integer(job_log.is_compute));
+  json_object_set_new(json_root, "slurm job id", json_string(job_log.slurm_job_id));
   
   //TODO: JANSSON does not handle unsigned int
   json_object_set_new( json_root, "category", json_string("MODS") );

@@ -14,8 +14,7 @@ echo "============"
 ./h5_rdwt
 echo "Done"
 echo "============"
-GOTCHAH5=../lwraphdf5.so
-#GOTCHAH5=../lwrapposix_rdwt.so
+GOTCHAH5=../mywrapper/lwraphdf5.so
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 if test -f "$GOTCHALIB"; then
  echo "Testing HDF5 apps with GOTCHA"

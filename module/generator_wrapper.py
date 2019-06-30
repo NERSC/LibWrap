@@ -21,7 +21,6 @@ static int dissectio_Orig_Func (int param){
 	f.write("#include <time.h>\n");
 	f.write("#include \"gotcha/gotcha.h\"\n");
 	f.write("#include <pthread.h>\n");
-	f.write("#include <mpi.h>\n");
 	f.write("#include <sys/types.h>\n");
 	f.write("#include <sys/stat.h>\n");
 	f.write("#include <fcntl.h>\n\n");
