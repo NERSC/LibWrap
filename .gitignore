@@ -11,5 +11,7 @@
 !example_usrwrap/
 !example_usrwrap/hdf5
 !example_usrwrap/posix
+!example_usrwrap/rand
 !example_outlog/
 !example_outlog/MODS
+

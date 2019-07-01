@@ -13,7 +13,7 @@ void crt_json_log()
   /* Job information gathered from extrct_job_info */
   json_root = json_object();
   json_object_set_new(json_root, "category", json_string("MODS") );
-  json_object_set_new(json_root, "name", json_string("gotchaio-tracer") );
+  json_object_set_new(json_root, "name", json_string("libwrap-posix") );
   json_object_set_new(json_root, "uid", json_integer(job_log.uid) );
   json_object_set_new(json_root, "nersc host", json_string(job_log.host));
   json_object_set_new(json_root, "hostname", json_string(job_log.hostname));

@@ -1,10 +1,10 @@
 ## Wrapper library
-* wrapper library that can be used to wrap any function from any library
+* wrapper library that can be used to wrap functions from any library
 
 ## Dependencies
 * [Gotcha](https://gotcha.readthedocs.io/en/latest/#). Gotcha is an API that provides function wrapping.
 
-If you want to use scripts in example\_logfile/ then you need
+If you want to follow tutorial below to submit data to MODS then you will need
 
 * JANSSON 2.12 or higher
 * openssl-1.1.0a or higher 
@@ -21,15 +21,19 @@ export LD_LIBRARY_PATH=/usr/common/software/rabbitmq/0.9.0/lib64:$LD_LIBRARY_PAT
   
 
 ## How to use
-* To get started go module/. You should create a configuration file with functions that needs to be wrap and other necessary parameters. More details in module/
+* To get started go to module/. You should create a configuration file with functions that needs to be wrap and other necessary parameters. More details in module/
 
-* Once a configuration file has been created run ``python parser yourmodulename``. This will create necessary files and Makefile in $libwrap home. 
+* Once a configuration file has been created run ``python parse.py yourmodulename``. This will create necessary files and Makefile in output specified in the config file. We will assume output is mywrapper/ 
 
-* Install wrapper
+* Write your user wrappers as the names defined in the config file (example\_wrap\rand is simplest example). For this tutorial, you can copy posix\_wrap from example\_usrwrap/posix to mywrapper/. posix\_wrap in the example is submitting logs to MODS[link?]. The files for sending data to MODS resides in example\_outlog/MODS/. Copy all files to mywrapper/.
+
+* Install wrapper inside mywrapper/
 ```
 export GOTCHA=path_gotcha_install
 make 
 ```
 
-* This step would create yourmodulename.so and yourmodule.a. You should now link the library to your application when executing for example LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp. See test/ for more examples.
+* This step would create yourmodulename.so and yourmodule.a. You should now link the library to your application when executing for example LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp. See test/ for more examples. For testing you can do in test dir `bash test\_posix.sh`. This should have submitted data in [MODS](https://kb.nersc.gov). 
+
+* To locate your data select Default space in MODS -> Go to Discover. Set RoutingKey (this is drop down just below Add a filter on left) to ou-das-\*. Search for your username or "wraplib-posix". Dont forget to select the correct time range on top right.
 
