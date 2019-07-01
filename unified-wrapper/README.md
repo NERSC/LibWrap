@@ -1,5 +1,13 @@
 # Unified wrapper
 
+* Notes:
+```
+To build any shared library set the BUILD_SHARED_LIBS CMake variable to TRUE: cmake -DBUILD_SHARED_LIBS=TRUE ...
+
+To enable shared library always do: export CRAYPE_LINK_TYPE=dynamic
+To enable static library always do: export CRAYPE_LINK_TYPE=static
+```
+
 * Set GOTCHA path:
 ```
 export GOTCHA= <path to gotcha installation directory>
