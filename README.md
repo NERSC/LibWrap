@@ -21,11 +21,11 @@ export LD_LIBRARY_PATH=/usr/common/software/rabbitmq/0.9.0/lib64:$LD_LIBRARY_PAT
   
 
 ## How to use
-* To get started go to module/. You should create a configuration file with functions that needs to be wrap and other necessary parameters. More details in module/
+* To get started go to module/. You should create a configuration file with functions that needs to be wrap and other necessary parameters. More details is in module/
 
 * Once a configuration file has been created run ``python parse.py yourmodulename``. This will create necessary files and Makefile in output specified in the config file. We will assume output is mywrapper/ 
 
-* Write your user wrappers as the names defined in the config file (example\_wrap\rand is simplest example). For this tutorial, you can copy posix\_wrap from example\_usrwrap/posix to mywrapper/. posix\_wrap in the example is submitting logs to MODS[link?]. The files for sending data to MODS resides in example\_outlog/MODS/. Copy all files to mywrapper/.
+* Write your user wrappers as the names defined in the config file (example\_wrap\rand is simplest example). For this tutorial, you can copy posix\_wrap from example\_usrwrap/posix to mywrapper/. posix\_wrap in the example is submitting logs to MODS. The files for sending data to MODS resides in example\_outlog/MODS/. Copy all files to mywrapper/.
 
 * Install wrapper inside mywrapper/
 ```

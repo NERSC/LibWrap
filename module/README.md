@@ -14,7 +14,8 @@ This tool will generate the source files that would include the meta wrappers th
 
 This generator will also create Makfile that would compile both user code and generated meta wrapper source code into a single .so or .a file. If the user is using any libraries in the user wrapper code, they should include it in INCLUDES\_IN\_MAKE and LIBRARIES\_IN\_MAKE. 
 
-The user is responsible for formatting and writing the logs. We do not recommend doing the logging inside the user wrappers. We recommend doing the logging during the end of application. To that end, tool accepts two functions that can be defined with LOG\_MPI\_FINALIZE and LOG\_ATEXIT. The correspoinding functions would be called at MPI\_finalize and program termination respectively. Check example\_usrwrap/posix/:mpi\_finalize\_cb and example\_usrwrap/posix/log\_atexit in the for example. 
+The user is responsible for formatting and writing the logs. We do not recommend doing the logging inside the user wrappers. We recommend doing the logging during the end of application. To that end, tool accepts two functions that can be definer with LOG\_MPI\_FINALIZE and LOG\_ATEXIT. The corresponding functions would be called at MPI\_finalize and program termination respectively. Check example\_usrwrap/posix/posix\_wrap.c:mpi\_finalize\_cb and example\_usrwrap/posix/posix\_wrap.h:log\_atexit in the for example. 
 
 *Note* - except user wrap functions all other functions should have void return type and no parameters.
+
 *Note* - If you specify LOG\_MPI\_FINALIZE then LOG\_ATEXIT will not be called. We assume user will do all logging at MPI\_finalize. However, if application does not use mpi then should ignore MPI\_LOG\_FINALIZE parameter and specify LOG\_ATEXIT.
