@@ -42,12 +42,15 @@ static int dissectio_Orig_Func (int param){
 		f.write("static gotcha_wrappee_handle_t " + function.name + "_handle;\n")
                 f.write("typedef " + function.ret_type + " (*" + function.name + 
 					"_fptr" + ")(" + function.arg_string + ");\n\n")
+                f.write(function.ret_type + " __wrap_" + function.name + "(" + \
+							function.arg_string + ");\n\n")
 	f.write("\n\n");
 		
 	# write each function wrapper
 	for function, log_funcs in zip(func_list, log_funcs_list):
 		#write static wrapper
-                f.write("int" + " __wrap_" + function.name + "(" + function.arg_string + "){\n\n")
+                f.write(function.ret_type + " __wrap_" + function.name + "(" + \
+							function.arg_string + "){\n\n")
 		f.write("\tpthread_mutex_lock(&log_mutex);\n")
 		f.write("\t_log_init();\n")
 		if log_funcs:
@@ -72,9 +75,9 @@ static int dissectio_Orig_Func (int param){
 						" = " + "(" + function.name + "_fptr)" 
 						+ "gotcha_get_wrappee(" + function.name 
 								+ "_handle);\n\n" )
-		f.write("\t" + function.ret_type + " " + "result" + "=" + 
-				function.wrapee+"(" + function.string_param_names + ");\n\n")
-		f.write("\treturn result;\n")
+		#f.write("\t" + function.ret_type + " " + "result" + "=" + 
+		#		function.wrapee+"(" + function.string_param_names + ");\n\n")
+		f.write("\treturn " + function.wrapee+"(" + function.string_param_names + ");\n")
 		f.write("}\n\n\n")
 		
 		'''
