@@ -3,7 +3,8 @@ from __future__ import print_function
 import sys
 
 
-def generate_wrapper(filename, func_list, modulename, log_file, include_headers, log_funcs_list):
+def generate_wrapper(filename, func_list, modulename, log_file, include_headers, \
+				  log_wrap_funcs_list, log_pre_wrap_funcs_list):
         """static gotcha_wrappee_handle_t WRAP_Orig_Func_handle;
 static int (*WRAP_Orig_Func) (int param);
 static int dissectio_Orig_Func (int param){
@@ -47,37 +48,50 @@ static int dissectio_Orig_Func (int param){
 	f.write("\n\n");
 		
 	# write each function wrapper
-	for function, log_funcs in zip(func_list, log_funcs_list):
+	for function, log_post_funcs, log_pre_funcs in zip(func_list, log_wrap_funcs_list,\
+									log_pre_wrap_funcs_list):
 		#write static wrapper
-                f.write(function.ret_type + " __wrap_" + function.name + "(" + \
+		f.write(function.ret_type + " __wrap_" + function.name + "(" + \
 							function.arg_string + "){\n\n")
+		if log_pre_funcs:
+			f.write("\tpthread_mutex_lock(&log_mutex);\n")
+			f.write("\t"+ log_pre_funcs + "(" + function.string_param_names + ");\n")
+			f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
+		f.write("\t" + function.ret_type + " result=" "__real_" + function.name +  "(" + 
+					function.string_param_names + ");\n\n")
+		
 		f.write("\tpthread_mutex_lock(&log_mutex);\n")
 		f.write("\t_log_init();\n")
-		if log_funcs:
-			f.write("\t"+ log_funcs + "(" + function.string_param_names + ");\n")
+		if log_post_funcs:
+			f.write("\t"+ log_post_funcs + "(" + function.string_param_names + ");\n")
 		f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
-		f.write("\treturn "  "__real_" + function.name +  "(" + 
-					function.string_param_names + ");\n")
-                f.write("}\n\n\n")
+                
+		f.write("\treturn result;\n")
+		f.write("}\n\n\n")
 		
 		#write shared wrapper
                 f.write("static " + function.ret_type + " " + function.wraper + 
 						"(" + function.arg_string + "){\n\n")
                 
-		f.write("\tpthread_mutex_lock(&log_mutex);\n")
-		f.write("\t_log_init();\n")
-		if log_funcs:
-                	f.write("\t"+ log_funcs +"(" + function.string_param_names + ");\n")
-                f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")
-		
+		if log_pre_funcs:
+			f.write("\tpthread_mutex_lock(&log_mutex);\n")
+			f.write("\t"+ log_pre_funcs + "(" + function.string_param_names + ");\n")
+			f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
 		
 		f.write("\t" + function.name + "_fptr" +" " +function.wrapee + 
 						" = " + "(" + function.name + "_fptr)" 
 						+ "gotcha_get_wrappee(" + function.name 
 								+ "_handle);\n\n" )
-		#f.write("\t" + function.ret_type + " " + "result" + "=" + 
-		#		function.wrapee+"(" + function.string_param_names + ");\n\n")
-		f.write("\treturn " + function.wrapee+"(" + function.string_param_names + ");\n")
+		f.write("\t" + function.ret_type + " " + "result" + "=" + 
+				function.wrapee+"(" + function.string_param_names + ");\n\n")
+		
+		f.write("\tpthread_mutex_lock(&log_mutex);\n")
+		f.write("\t_log_init();\n")
+		if log_post_funcs:
+                	f.write("\t"+ log_post_funcs +"(" + function.string_param_names + ");\n")
+                f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")
+		
+		f.write("\treturn result;\n")
 		f.write("}\n\n\n")
 		
 		'''

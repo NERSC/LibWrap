@@ -4,7 +4,7 @@ export CRAYPE_LINK_TYPE=dynamic
 echo "============"
 echo "Compiling HDF5 apps"
 echo "============"
-cc -o ph5example ph5example.c
+cc -g -o ph5example ph5example.c
 echo "Done"
 echo "============"
 echo "Testing HDF5 apps without GOTCHA"
