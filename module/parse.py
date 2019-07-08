@@ -7,8 +7,8 @@ from generator_wrapper import generate_wrapper
 from generator_loginit import generate_log_init
 from generator_makefile import generate_makefile
 from generator_joblog import generate_job_log_info
- 
-
+from generator_pkg import generate_pkg 
+from generator_static_obj import generate_static_obj
 
 def writable(dir_nm, fl_nm):
 	if not os.path.exists(dir_nm):
@@ -51,7 +51,8 @@ def read_config_file(filename):
 	log_atexit_fn, log_mpi_finalize_fn = "", ""
 	log_file_nm = ""
 	functions, log_wrap_functions = [], []
-	include_headers, libraries = [], []
+	include_headers, libraries, static_libs  = [], [], []
+	#static_libs = []
 	lib_in_make, inclds_in_make = "", ""
 	mode = ""
 	out_dir = ""
@@ -66,7 +67,8 @@ def read_config_file(filename):
 						 or line.strip("\n") == "LOG_ATEXIT"\
 						 or line.strip("\n") == "INCLUDE_HEADERS"\
 						 or line.strip("\n") == "LIBRARIES_IN_MAKE"\
-						 or line.strip("\n") == "INCLUDES_IN_MAKE" 
+						 or line.strip("\n") == "INCLUDES_IN_MAKE"\
+						 or line.strip("\n") == "STATIC_LIBRARIES" 
 						 or line.strip("\n") == "OUTPUT_DIR"):
 				mode = line.strip("\n");
 				continue	
@@ -97,6 +99,8 @@ def read_config_file(filename):
 				lib_in_make = line.strip("\n")
 			elif mode == "INCLUDES_IN_MAKE":
 				inclds_in_make = line.strip("\n")
+			elif mode == "STATIC_LIBRARIES":
+                                static_libs.append(line.strip("\n"))
 			elif mode == "OUTPUT_DIR":
 				out_dir = line.strip("\n")
 	log_mpi_finalize_fn, log_atexit_fn = map(addparasemicolon,\
@@ -105,7 +109,7 @@ def read_config_file(filename):
 		log_wrap_functions.extend([""]*(len(functions)-len(log_wrap_functions)))
 	return functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
 			log_file_nm, log_atexit_fn, include_headers, lib_in_make,\
-							inclds_in_make, out_dir
+							inclds_in_make, out_dir, static_libs
 
 
 def main(modulename):
@@ -116,14 +120,15 @@ def main(modulename):
 		filename = modulename + ".config"
 	functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
 				log_file_nm, log_atexit_fn, include_headers, \
-				lib_in_make, inclds_in_make, out_dir \
+				lib_in_make, inclds_in_make, out_dir, static_libs \
 						 = read_config_file(filename)
 	generate_log_init(writable(out_dir, "log_init"), log_atexit_fn, log_mpi_finalize_fn, log_file_nm)
 	generate_wrapper(writable(out_dir, "wrapper.c"), functions, modulename, log_file_nm, include_headers,\
 									log_wrap_functions)
 	generate_makefile(writable(out_dir, "Makefile"), modulename, lib_in_make, inclds_in_make)
 	generate_job_log_info(writable(out_dir, "log_job_info"))
-
+	generate_pkg(writable(out_dir, "wrapper-config.pc"), functions, libraries, out_dir, modulename)
+	generate_static_obj(writable(out_dir, "static-object-generator.sh"), static_libs)
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:
