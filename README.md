@@ -30,6 +30,9 @@ You need to write a module to load your package config file. The package config 
 ```
 module load your-module-for-loading-your-pkg-config
 ```
+** Testing the wrapper without module-
+Please look at test that contains test scripts for testing your wrapper both in static and shared mode. 
+
 
 *Note*: Use the rabbitmq and openssl version as specified here. As of June 27 2019, the default versiof rabbitmq and openssl on cori are incompatible. You will **not** get any errors while using incompatible versions and might end up spending hours figuring out the issue. 
   
