@@ -9,9 +9,14 @@ If you want to use scripts in example\_logfile/ then you need
 * JANSSON 2.12 or higher
 * openssl-1.1.0a or higher 
 * [rabbitmq-c](https://github.com/alanxz/rabbitmq-c) 0.9.0 or higher 
+** Important Note: You need to set dynamic or static mode through CRAYPE_LINK_TYPE variable
+```
+export CRAYPE_LINK_TYPE = dynamic
+OR
+export CRAYPE_LINK_TYPE = static 
+```
 
-
-** Shared mode-
+** Shared/Dynamic mode-
 On cori you can load these using
 ```
 module load openssl/1.1.0a
