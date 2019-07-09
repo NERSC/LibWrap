@@ -44,9 +44,12 @@ Please look at test that contains test scripts for testing your wrapper both in 
 
 * Install wrapper
 ```
-export GOTCHA=path_gotcha_install
+module load gnu-wrap
+bash static-object-generator.sh
 make 
 ```
 
 * This step would create yourmodulename.so and yourmodule.a. You should now link the library to your application when executing for example LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp. See test/ for more examples.
+
+**Note- If you use module file (i.e., module gnu-wrap) which will set LD_LIBRARY_PATH to link the wrapper with the application for shared mode and will also set Package config path for static mode.
 
