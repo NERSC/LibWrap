@@ -19,7 +19,7 @@ export LD_LIBRARY_PATH=/usr/common/software/rabbitmq/0.9.0/lib64:$LD_LIBRARY_PAT
 ```
 
 ** Static mode-
-You need to write a module to load your package config file. The package config contains the linkingfor all the statically linked routines and path to the necessary libraries, where those routines aredefined. An example of module file is given here. Please remove the module file extension (which has .txt extension now) in case of loading module in Cori. Besides, please look under the module section to get more idea about how to configure your package config file in a module file.
+You need to write a module to load your package config file. The package config contains the linkingfor all the statically linked routines and path to the necessary libraries, where those routines aredefined. An example of module file is given here. Please remove the module file extension (which has .md extension now) in case of loading module in Cori. Besides, please look under the module section to get more idea about how to configure your package config file in a module file.
 ```
 module load your-module-for-loading-your-pkg-config
 ```
