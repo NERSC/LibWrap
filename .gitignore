@@ -3,7 +3,6 @@
 !*.c
 !*.h
 !*.py
-!*.sh
 !*.config
 !*.md
 !test/
