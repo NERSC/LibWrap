@@ -19,14 +19,13 @@ export CRAYPE_LINK_TYPE = static
 ```
 
 ** Shared/Dynamic mode-
-On cori you can load these using
 ```
 export CRAYPE_LINK_TYPE=dynamic
 module load gnu-wrap #will load the dependencies openssl,rabbitmq and jansson
 ```
 
 ** Static mode-
-You need to write a module to load your package config file. The package config contains the linkingfor all the statically linked routines and path to the necessary libraries, where those routines aredefined. An example of module file is given here. Please remove the module file extension (which has .md extension now) in case of loading module in Cori. Besides, please look under the module section to get more idea about how to configure your package config file in a module file.
+You need to write a module to load your package config file. The package config contains the linkingfor all the statically linked routines and path to the necessary libraries, where those routines aredefined. Please look at example config file in /module to see how to provide paths for third party dependencies. An example of module file is given here. Please remove the module file extension (which has .md extension now) in case of loading module in Cori. Besides, please look under the module section to get more idea about how to configure your package config file in a module file.
 ```
 export CRAYPE_LINK_TYPE=static
 module load your-module-for-loading-your-pkg-config
