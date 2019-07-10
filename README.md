@@ -30,7 +30,7 @@ You need to write a module to load your package config file. The package config 
 ```
 module load your-module-for-loading-your-pkg-config
 ```
-** Testing the wrapper without module-
+** Quick testing the wrapper without module-
 Please look at test that contains test scripts for testing your wrapper both in static and shared mode. 
 
 
@@ -49,6 +49,7 @@ module load gnu-wrap
 bash static-object-generator.sh
 make 
 ```
+** Please look at example_outlog and example_usrwrap to see sample user log file and sample techniqueto produce output to MODS
 
 * This step would create yourmodulename.so and yourmodule.a. You should now link the library to your application when executing for example LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp. See test/ for more examples.
 
