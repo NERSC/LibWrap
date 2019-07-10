@@ -44,6 +44,7 @@ Please look at test that contains test scripts for testing your wrapper both in 
 
 * Install wrapper
 ```
+export GOTCHA=path/to/gotcha/install ### We will move this to module for both static and shared mode
 module load gnu-wrap
 bash static-object-generator.sh
 make 

@@ -12,7 +12,7 @@ def generate_makefile(fl_nm, modulename, libraries_in_make, includes_in_make):
 	str_makefile = "TARGET = libwrap%s.so\nTARGET2 = libwrap%s.a\n" %(modulename,modulename)
 	str_makefile = "%s %s" %(str_makefile, 
 """
-ALL_OBJECTS_DIR = ALL_OBJECTS 
+ALL_OBJECTS_DIR = ALL_OBJECTS
 CC = LD_LIBRARY_PATH=$(GOTCHA)/lib64 cc
 CFLAGS = -fPIC -I$(GOTCHA)/include -L$(GOTCHA)/lib64
 LIBS = -lgotcha
@@ -24,7 +24,7 @@ LIBS = -lgotcha
 .PHONY: default all clean
 default: $(TARGET) $(TARGET2)
 all: default
-
+SRC=wrapper.c
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 ALL_OBJS := $(patsubst %.c,$(ALL_OBJECTS_DIR)/*.o,$(SRC))
 HEADERS = $(wildcard *.h)
