@@ -49,7 +49,7 @@ module load gnu-wrap
 bash static-object-generator.sh
 make 
 ```
-** Please look at example_outlog and example_usrwrap to see sample user log file and sample techniqueto produce output to MODS
+** Please look at example_outlog and example_usrwrap to see sample user log file and sample techniqueto produce output to MODS. The user log files and the MODS file need to be in $libwrap home.
 
 * This step would create yourmodulename.so and yourmodule.a. You should now link the library to your application when executing for example LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp. See test/ for more examples.
 
