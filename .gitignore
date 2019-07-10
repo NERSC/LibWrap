@@ -2,6 +2,7 @@
 !*.c
 !*.h
 !*.py
+!*.pyc
 !*.sh
 !*.config
 !*.md
