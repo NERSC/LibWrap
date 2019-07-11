@@ -14,7 +14,7 @@ def generate_makefile(fl_nm, modulename, libraries_in_make, includes_in_make):
 """
 ALL_OBJECTS_DIR = ALL_OBJECTS
 CC = LD_LIBRARY_PATH=$(GOTCHA)/lib64 cc
-CFLAGS = -fPIC -I$(GOTCHA)/include -L$(GOTCHA)/lib64
+CFLAGS = -fPIC -I$(GOTCHA)/include/ -L$(GOTCHA)/lib64
 LIBS = -lgotcha
 
 """ + 
