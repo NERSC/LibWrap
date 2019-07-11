@@ -43,8 +43,8 @@ Please look at test that contains test scripts for testing your wrapper both in 
 
 * Install wrapper
 ```
-export GOTCHA=path/to/gotcha/install ### We will move this to module for both static and shared mode
-bash static-object-generator.sh
+export GOTCHA=path/to/gotcha/install ### We can move this step to module for both static and shared mode
+bash static-object-generator.sh  ### This step is specifically for static mode that helps to extract object files from the static libraries provided by user.
 make 
 ```
 ** Please look at example_outlog and example_usrwrap to see sample user log file and sample techniqueto produce output to MODS. The user log files and the MODS file need to be in $libwrap home.
