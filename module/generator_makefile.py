@@ -18,7 +18,7 @@ CFLAGS = -fPIC -I$(GOTCHA)/include/ -L$(GOTCHA)/lib64
 LIBS = -lgotcha
 
 """ + 
-"\nLIBRARIES = -L/$(GOTCHA)/lib64 %s\nINCLUDES = -I/usr/include -I$(GOTCHA)/include %s\n"\
+"\nLIBRARIES = -L/$(GOTCHA)/lib64 -L$(GOTCHA)/ %s\nINCLUDES = -I/usr/include -I$(GOTCHA)/include %s\n"\
 				 % (libraries_in_make, includes_in_make)
 + """
 .PHONY: default all clean
