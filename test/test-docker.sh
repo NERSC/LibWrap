@@ -1,6 +1,6 @@
 #!/bin/bash
-cc -o h5_crtdat h5_crtdat.c
-cc -o h5_rdwt h5_rdwt.c
+cc -o h5_crtdat h5_crtdat.c -I /LibWrap/dockers/shared/include
+cc -o h5_rdwt h5_rdwt.c -I /LibWrap/dockers/shared/include
 GOTCHAH5=../mywrapper/libwraphdf5.so
 GOTCHALIB=/LibWrap/dockers/shared/lib64/libgotcha.so
 if test -f "$GOTCHALIB"; then
