@@ -11,25 +11,24 @@ If you want to use scripts in example\_logfile/ then you need
 * [rabbitmq-c](https://github.com/alanxz/rabbitmq-c) 0.9.0 or higher 
 
 
-** Important Note: You need to set dynamic or static mode through CRAYPE_LINK_TYPE variable
-```
-export CRAYPE_LINK_TYPE = dynamic
-OR
-export CRAYPE_LINK_TYPE = static 
-```
+** Important Note: By default the environment is static at Cori at this moment. However,  you can also set dynamic or static mode through CRAYPE_LINK_TYPE variable
 
 ** Shared/Dynamic mode-
 ```
 export CRAYPE_LINK_TYPE=dynamic
-module load gnu-wrap #will load the dependencies openssl,rabbitmq and jansson
 ```
 
 ** Static mode-
 You need to write a module to load your package config file. The package config contains the links for all the statically linked routines and path to the necessary libraries, where those routines aredefined. Please look at example config file in /module to see how to provide paths for third party dependencies. An example of module (i.e.,module-libwrap-01) is given here. Besides, please look under the module section to get more idea about how to configure your package config file in a module file.
 ```
 export CRAYPE_LINK_TYPE=static
-module load your-module-for-loading-your-pkg-config
+
 ```
+** Test with module-
+```
+module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
+```
+
 ** Quick testing the wrapper without module-
 Please look at test that contains test scripts for testing your wrapper both in static and shared mode. In Cori you need to have your module in Cori's /usr/commom/software/modulefiles in order to use the module.
 
@@ -43,7 +42,6 @@ Please look at test that contains test scripts for testing your wrapper both in 
 
 * Install wrapper
 ```
-export GOTCHA=path/to/gotcha/install ### We can move this step to module for both static and shared mode
 bash static-object-generator.sh  ### This step is specifically for static mode that helps to extract object files from the static libraries provided by user.
 make 
 ```
