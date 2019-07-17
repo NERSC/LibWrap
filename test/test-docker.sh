@@ -1,5 +1,6 @@
 #!/bin/bash
-cc -o h5_crtdat h5_crtdat.c -L${HOME}/LibWrap/dockers/shared -lhdf5_intel -lhdf5_parallel -I /LibWrap/dockers/shared/include
+export LD_LIBRARY_PATH=/LibWrap/dockers/shared
+cc -o h5_crtdat h5_crtdat.c  -I $(HOME)/LibWrap-Project/LibWrap/dockers/shared/include
 cc -o h5_rdwt h5_rdwt.c -I /LibWrap/dockers/shared/include
 GOTCHAH5=../mywrapper/libwraphdf5.so
 GOTCHALIB=/LibWrap/dockers/shared/lib64/libgotcha.so
