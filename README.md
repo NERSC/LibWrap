@@ -29,8 +29,6 @@ export CRAYPE_LINK_TYPE=static
 module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
 ```
 
-** Quick testing the wrapper without module-
-Please look at test that contains test scripts for testing your wrapper both in static and shared mode. In Cori you need to have your module in Cori's /usr/commom/software/modulefiles in order to use the module.
 
 *Note*: Use the rabbitmq and openssl version as specified here. As of June 27 2019, the default versiof rabbitmq and openssl on cori are incompatible. You will **not** get any errors while using incompatible versions and might end up spending hours figuring out the issue. 
   
@@ -55,9 +53,10 @@ make
 
 This step would create yourmodulename.so and yourmodule.a. 
 
+** Test the wrapper-
 * You should now link the library to your application when executing for example `LD\_PRELOAD=path/to/yourmodule.so:path/to/libgotcha.so ./myapp`. See test/ for more examples. For testing you can do in test dir `bash test\_posix.sh`. This should have submitted data in [MODS](https://kb.nersc.gov). 
 
 * To locate your data select Default space in MODS -> Go to Discover. Set RoutingKey (this is drop down just below Add a filter on left) to ou-das-\*. Search for your username or "wraplib-posix". Dont forget to select the correct time range on top right.
 
-**Note for module- In module file you can set LD_PRELOAD to link your shared wrapper(i.e., wrapper.so) with the application for shared mode and can also set Package_Config_Path to load the static wrapper (i.e., wrapper.a) for static mode.
+**Test with module- In module file you can set LD_PRELOAD to link your shared wrapper(i.e., wrapper.so) with the application for shared mode and can also set Package_Config_Path to load the static wrapper (i.e., wrapper.a) for static mode.In Cori you need to have your module in Cori's /usr/commom/software/modulefiles in order to use the module.
 
