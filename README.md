@@ -24,7 +24,7 @@ You need to write a module to load your package config file. The package config 
 export CRAYPE_LINK_TYPE=static
 
 ```
-** Test with module-
+** Load module-
 ```
 module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
 ```
@@ -49,11 +49,9 @@ Meta wrappers contains the logic to intercept the function calls from the librar
 
 * Install wrapper inside mywrapper/
 ```
-export GOTCHA=path_gotcha_install
 bash static-object-generator.sh  ### This step is specifically for static mode that helps to extract object files from the static libraries provided by user.
 make 
 ```
-** Please look at example_outlog and example_usrwrap to see sample user log file and sample techniqueto produce output to MODS. The user log files and the MODS file need to be in $libwrap home.
 
 This step would create yourmodulename.so and yourmodule.a. 
 
@@ -61,5 +59,5 @@ This step would create yourmodulename.so and yourmodule.a.
 
 * To locate your data select Default space in MODS -> Go to Discover. Set RoutingKey (this is drop down just below Add a filter on left) to ou-das-\*. Search for your username or "wraplib-posix". Dont forget to select the correct time range on top right.
 
-**Note- In module file (i.e., module gnu-wrap) you can set LD_PRELOAD to link the wrapper with the application for shared mode and can also set Package_Config_Path for static mode.
+**Note for module- In module file you can set LD_PRELOAD to link your shared wrapper(i.e., wrapper.so) with the application for shared mode and can also set Package_Config_Path to load the static wrapper (i.e., wrapper.a) for static mode.
 
