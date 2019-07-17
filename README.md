@@ -19,7 +19,7 @@ export CRAYPE_LINK_TYPE=dynamic
 ```
 
 ** Static mode-
-You need to write a module to load your package config file. The package config contains the links for all the statically linked routines and path to the necessary libraries, where those routines aredefined. Please look at example config file in /module to see how to provide paths for third party dependencies. An example of module (i.e.,module-libwrap-01) is given here. Besides, please look under the module section to get more idea about how to configure your package config file in a module file.
+You need to write a module to load your package config file. The package config contains the links for all the statically linked routines and path to the necessary libraries, where those routines aredefined. Please look at example config file in /module to see how to provide paths for third party dependencies. An example of module (i.e.,module-libwrap-01) is given here. Besides, please look at /module to get more idea about how to configure your package_config_file in a module file.
 ```
 export CRAYPE_LINK_TYPE=static
 
