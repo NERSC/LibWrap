@@ -1,6 +1,7 @@
 ## Configuration File
 The configuration file contains keyword (in capital) followed by user parameters new line. Only FUNCTIONS keyword is mandatory. Other are optional.
 ```
+MODE - This should be set with either static/shared/both. Based on the parameter you provide, the wrapper will be built with either static or shared or  both mode.
 FUNCTIONS - The signature of functions to be wrap. One function per line. Also corresponding user wrapper seperated by colon. 
 USER_WRAP_FILE - name of the file where all the user defined log functions and data structure resides. You should create both - .c and .h
 LOG_MPI_FINALIZE - check below
