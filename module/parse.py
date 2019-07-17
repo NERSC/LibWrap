@@ -54,6 +54,7 @@ def read_config_file(filename):
 	include_headers, libraries, static_libs  = [], [], []
 	#static_libs = []
 	lib_in_make, inclds_in_make = "", ""
+	wrapper_mode = ""
 	mode = ""
 	out_dir = ""
 	with (open(filename, 'r')) as f:
@@ -61,7 +62,8 @@ def read_config_file(filename):
 			if line.startswith("#"): continue
 			if not line.strip("\n"):
 				continue
-			if (line.strip("\n") == "FUNCTIONS" or line.strip("\n") == "LIBRARY"\
+			if (line.strip("\n") == "MODE" or line.strip("\n") == "FUNCTIONS"\
+						 or line.strip("\n") == "LIBRARY"\
 						 or line.strip("\n") == "LOG_MPI_FINALIZE"\
 						 or line.strip("\n") == "USER_WRAP_FILE"\
 						 or line.strip("\n") == "LOG_ATEXIT"\
@@ -72,6 +74,8 @@ def read_config_file(filename):
 						 or line.strip("\n") == "OUTPUT_DIR"):
 				mode = line.strip("\n");
 				continue	
+			if mode=="MODE":
+				wrapper_mode=line.strip("\n");
 			if mode=="FUNCTIONS":
 				try:	
 					[func_nm, func_wrap] = line.split(":")
@@ -109,7 +113,7 @@ def read_config_file(filename):
 		log_wrap_functions.extend([""]*(len(functions)-len(log_wrap_functions)))
 	return functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
 			log_file_nm, log_atexit_fn, include_headers, lib_in_make,\
-							inclds_in_make, out_dir, static_libs
+							inclds_in_make, out_dir, static_libs, wrapper_mode
 
 
 def main(modulename):
@@ -120,11 +124,11 @@ def main(modulename):
 		filename = modulename + ".config"
 	functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
 				log_file_nm, log_atexit_fn, include_headers, \
-				lib_in_make, inclds_in_make, out_dir, static_libs \
+				lib_in_make, inclds_in_make, out_dir, static_libs ,wrapper_mode \
 						 = read_config_file(filename)
 	generate_log_init(writable(out_dir, "log_init"), log_atexit_fn, log_mpi_finalize_fn, log_file_nm)
 	generate_wrapper(writable(out_dir, "wrapper.c"), functions, modulename, log_file_nm, include_headers,\
-									log_wrap_functions)
+									log_wrap_functions, wrapper_mode)
 	generate_makefile(writable(out_dir, "Makefile"), modulename, lib_in_make, inclds_in_make)
 	generate_job_log_info(writable(out_dir, "log_job_info"))
 	generate_pkg(writable(out_dir, "wrapper-config.pc"), functions, libraries, out_dir, modulename)

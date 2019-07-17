@@ -38,7 +38,7 @@ static int dissectio_Orig_Func (int param){
 	f.write("\n\n")
 
 	
-	if wrapper_mode=="shared" or wrapper_mode=="both":
+	if wrapper_mode=="shared" or wrapper_mode=="both" or wrapper_mode=="static":
 		for function in func_list:
 			f.write("static gotcha_wrappee_handle_t " + function.name + "_handle;\n")
                 	f.write("typedef " + function.ret_type + " (*" + function.name + 
@@ -48,7 +48,7 @@ static int dissectio_Orig_Func (int param){
 	# write each function wrapper
 	for function, log_funcs in zip(func_list, log_funcs_list):
 		#write static wrapper
-                if wrapper_mode=="static" or wrapper_mode=="both":
+                if wrapper_mode=="static" or wrapper_mode=="both" or wrapper_mode=="shared":
 			f.write("int" + " __wrap_" + function.name + "(" + function.arg_string + "){\n\n")
 			f.write("\tpthread_mutex_lock(&log_mutex);\n")
 			f.write("\t_log_init();\n")
@@ -60,7 +60,7 @@ static int dissectio_Orig_Func (int param){
                 	f.write("}\n\n\n")
 		
 		#write shared wrapper
-                if wrapper_mode=="shared" or wrapper_mode=="both":
+                if wrapper_mode=="shared" or wrapper_mode=="both" or wrapper_mode=="static":
 			f.write("static " + function.ret_type + " " + function.wraper + 
 						"(" + function.arg_string + "){\n\n")
                 
@@ -96,7 +96,7 @@ static int dissectio_Orig_Func (int param){
         f.write("\n")
 
 	
-	if wrapper_mode=="shared" or wrapper_mode=="both":
+	if wrapper_mode=="shared" or wrapper_mode=="both" or wrapper_mode=="static":
 		# write map struct
 		function = func_list[0]
         	f.write("static gotcha_binding_t wrap_" + modulename + " [] = {\n")
