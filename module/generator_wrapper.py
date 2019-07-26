@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys
 
 
-def generate_wrapper(filename, func_list, modulename, log_file, include_headers, log_funcs_list, wrapper_mode):
+def generate_wrapper(filename, func_list, modulename, log_file, include_headers, log_wrap_funcs_list, wrapper_mode,log_pre_wrap_funcs_list ):
         """static gotcha_wrappee_handle_t WRAP_Orig_Func_handle;
 static int (*WRAP_Orig_Func) (int param);
 static int dissectio_Orig_Func (int param){
@@ -44,32 +44,41 @@ static int dissectio_Orig_Func (int param){
                 	f.write("typedef " + function.ret_type + " (*" + function.name + 
 					"_fptr" + ")(" + function.arg_string + ");\n\n")
 		f.write("\n\n");
-		
+	
+	if wrapper_mode=="static" or wrapper_mode=="both":
+                for function in func_list:
+			f.write("ssize_t" +" __real_" + function.name + "(" + function.arg_string + ");\n\n")			
+
 	# write each function wrapper
-	for function, log_funcs in zip(func_list, log_funcs_list):
+	for function, log_post_funcs, log_pre_funcs in zip(func_list, log_wrap_funcs_list, log_pre_wrap_funcs_list):
 		#write static wrapper
                 if wrapper_mode=="static" or wrapper_mode=="both":
-			f.write("int" + " __wrap_" + function.name + "(" + function.arg_string + "){\n\n")
+			f.write(function.ret_type + " __wrap_" + function.name + "(" + function.arg_string + "){\n\n")
+			if log_pre_funcs:
+				f.write("\tpthread_mutex_lock(&log_mutex);\n")
+				f.write("\t"+ log_pre_funcs + "(" + function.string_param_names + ");\n")
+				f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
+			f.write("\t" + function.ret_type + " result=" "__real_" + function.name +  "(" + 
+					function.string_param_names + ");\n\n")
+			
 			f.write("\tpthread_mutex_lock(&log_mutex);\n")
 			f.write("\t_log_init();\n")
-			if log_funcs:
-				f.write("\t"+ log_funcs + "(" + function.string_param_names + ");\n")
-			f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
-			f.write("\treturn "  "__real_" + function.name +  "(" + 
-					function.string_param_names + ");\n")
+			if log_post_funcs:
+				f.write("\t"+ log_post_funcs + "(" + function.string_param_names + ");\n")
+			f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")
+			
+			f.write("\treturn result;\n")
+
                 	f.write("}\n\n\n")
 		
 		#write shared wrapper
                 if wrapper_mode=="shared" or wrapper_mode=="both":
 			f.write("static " + function.ret_type + " " + function.wraper + 
 						"(" + function.arg_string + "){\n\n")
-                
-			f.write("\tpthread_mutex_lock(&log_mutex);\n")
-			f.write("\t_log_init();\n")
-			if log_funcs:
-                		f.write("\t"+ log_funcs +"(" + function.string_param_names + ");\n")
-                	f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")
-		
+               		if log_pre_funcs:
+				f.write("\tpthread_mutex_lock(&log_mutex);\n")
+				f.write("\t"+ log_pre_funcs + "(" + function.string_param_names + ");\n")
+				f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")	
 		
 			f.write("\t" + function.name + "_fptr" +" " +function.wrapee + 
 						" = " + "(" + function.name + "_fptr)" 
@@ -77,6 +86,14 @@ static int dissectio_Orig_Func (int param){
 								+ "_handle);\n\n" )
 			f.write("\t" + function.ret_type + " " + "result" + "=" + 
 				function.wrapee+"(" + function.string_param_names + ");\n\n")
+			 
+			f.write("\tpthread_mutex_lock(&log_mutex);\n")
+			f.write("\t_log_init();\n")
+			if log_post_funcs:
+                		f.write("\t"+ log_post_funcs +"(" + function.string_param_names + ");\n")
+                	f.write("\tpthread_mutex_unlock(&log_mutex);\n\n")
+		
+		
 			f.write("\treturn result;\n")
 			f.write("}\n\n\n")
 		

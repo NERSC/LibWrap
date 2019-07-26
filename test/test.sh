@@ -1,5 +1,5 @@
 #!/bin/bash
-module load cray-hdf5
+#module load cray-hdf5
 export CRAYPE_LINK_TYPE=dynamic
 echo "============"
 echo "Compiling HDF5 apps"
@@ -16,10 +16,11 @@ echo "Done"
 echo "============"
 GOTCHAH5=../mywrapper/libwraphdf5.so
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
+#HDF5=${HOME}/LibWrap-Project/LibWrap/dockers/shared/libhdf5_intel.so
 if test -f "$GOTCHALIB"; then
  echo "Testing HDF5 apps with GOTCHA"
  echo "============"
- LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./h5_crtdat
+# LD_PRELOAD=$GOTCHAH5:$GOTCHALIB:$HDF5 ./h5_crtdat
  LD_PRELOAD=$GOTCHAH5:$GOTCHALIB ./h5_rdwt
  echo "============"
  echo "Done"

@@ -46,4 +46,3 @@ extern uint64_t now_microseconds(void);
 extern void microsleep(int usec);
 
 #endif
-

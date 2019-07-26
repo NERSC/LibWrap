@@ -50,7 +50,7 @@ def read_config_file(filename):
 		return fn_nm
 	log_atexit_fn, log_mpi_finalize_fn = "", ""
 	log_file_nm = ""
-	functions, log_wrap_functions = [], []
+	functions, log_wrap_functions, log_pre_wrap_functions = [], [], []
 	include_headers, libraries, static_libs  = [], [], []
 	#static_libs = []
 	lib_in_make, inclds_in_make = "", ""
@@ -77,18 +77,29 @@ def read_config_file(filename):
 			if mode=="MODE":
 				wrapper_mode=line.strip("\n");
 			if mode=="FUNCTIONS":
-				try:	
-					[func_nm, func_wrap] = line.split(":")
+					lst_col_split = line.strip("\n").split(":")
+					if len(lst_col_split)==2:
+						[func_nm, func_wrap] = lst_col_split
+						log_pre_wrap_functions.append("")
+					elif len(lst_col_split)==3:
+						[func_nm, func_wrap, func_pre_wrap] = lst_col_split
+						log_pre_wrap_functions.append(func_pre_wrap.lstrip())
+					elif len(lst_col_split)==1:
+						functions.append(func(line.strip("\n")))
+						print "wrap for function \"%s\" not given" % \
+									functions[-1].name
+						log_wrap_functions.append("")
+						log_pre_wrap_functions.append("")
+						continue
 					functions.append(func(func_nm))
 					if func_wrap.strip("\n"):
 						func_wrap = func_wrap.lstrip()
 						log_wrap_functions.append(func_wrap.strip("\n"))
-					else:
-						print "wrap for function %s not given" % \
-										 func_nm.name
-				except ValueError:
-					functions.append(func(line.strip("\n")))
-					print "wrap for function %s not given" % functions[-1].name
+					#this will happen when no postlog but prelog is given
+					#or when only function name is given and no log
+					else:	
+						log_wrap_functions.append("")
+						
 			elif mode=="LIBRARY":
 				libraries.append(line.strip("\n"))
 			elif mode == "LOG_MPI_FINALIZE":
@@ -111,9 +122,9 @@ def read_config_file(filename):
 			 [log_mpi_finalize_fn, log_atexit_fn])
 	if len(log_wrap_functions) != len(functions):
 		log_wrap_functions.extend([""]*(len(functions)-len(log_wrap_functions)))
-	return functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
-			log_file_nm, log_atexit_fn, include_headers, lib_in_make,\
-							inclds_in_make, out_dir, static_libs, wrapper_mode
+	return functions, log_wrap_functions, log_pre_wrap_functions, libraries,\
+		 log_mpi_finalize_fn, log_file_nm, log_atexit_fn, include_headers,\
+			lib_in_make, inclds_in_make, out_dir, static_libs, wrapper_mode
 
 
 def main(modulename):
@@ -122,14 +133,16 @@ def main(modulename):
 		modulename = modulename.replace(".config","") 
 	else:
 		filename = modulename + ".config"
-	functions, log_wrap_functions, libraries, log_mpi_finalize_fn,\
-				log_file_nm, log_atexit_fn, include_headers, \
+	functions, log_wrap_functions, log_pre_wrap_functions, libraries, \
+		log_mpi_finalize_fn,log_file_nm, log_atexit_fn, include_headers, \
 				lib_in_make, inclds_in_make, out_dir, static_libs ,wrapper_mode \
 						 = read_config_file(filename)
 	generate_log_init(writable(out_dir, "log_init"), log_atexit_fn, log_mpi_finalize_fn, log_file_nm)
-	generate_wrapper(writable(out_dir, "wrapper.c"), functions, modulename, log_file_nm, include_headers,\
-									log_wrap_functions, wrapper_mode)
-	generate_makefile(writable(out_dir, "Makefile"), modulename, lib_in_make, inclds_in_make)
+	generate_wrapper(writable(out_dir, "wrapper.c"), functions, modulename, log_file_nm,\
+					include_headers, log_wrap_functions, wrapper_mode,
+									log_pre_wrap_functions)
+	generate_makefile(writable(out_dir, "Makefile"), modulename, lib_in_make, inclds_in_make, \
+										wrapper_mode)
 	generate_job_log_info(writable(out_dir, "log_job_info"))
 	generate_pkg(writable(out_dir, "wrapper-config.pc"), functions, libraries, out_dir, modulename)
 	generate_static_obj(writable(out_dir, "static-object-generator.sh"), static_libs)

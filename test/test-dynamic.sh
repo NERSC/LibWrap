@@ -4,7 +4,7 @@ export CRAYPE_LINK_TYPE=dynamic
 echo "============"
 #export GOTCHA=/global/homes/a/aalmamun/gotcha/install
 
-GOTCHAH5=../mywrapper/lwraphdf5.so
+GOTCHAH5=../mywrapper/libwraphdf5.so
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 if test -f "$GOTCHALIB"; then
  echo "Testing apps with COMMON"

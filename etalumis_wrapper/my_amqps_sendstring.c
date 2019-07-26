@@ -1,4 +1,6 @@
-/*N LICENSE BLOCK *****
+/* vim:set ft=c ts=2 sw=2 sts=2 et cindent: */
+/*
+ * ***** BEGIN LICENSE BLOCK *****
  * Version: MIT
  *
  * Portions created by Alan Antonuk are Copyright (c) 2012-2013
@@ -135,4 +137,3 @@ void send_to_mods(json_t *root)
   }
   return ;
 }
-

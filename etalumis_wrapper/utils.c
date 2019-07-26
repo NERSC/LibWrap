@@ -186,4 +186,3 @@ void amqp_dump(void const *buffer, size_t len) {
     printf("%08lX:\n", count);
   }
 }
-

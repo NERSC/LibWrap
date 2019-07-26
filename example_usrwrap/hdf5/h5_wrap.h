@@ -15,12 +15,7 @@
 #include "my_amqps_sendstring.h"
 #include "log_job_info.h" /* This should call job_log_info if you want wrapper to extractt default job information like uid*/
 
-
-extern long long glo_parallel_read_data, glo_parallel_write_data, 
-           serial_read_data, serial_write_data;
-
-
-struct api_counts{
+struct h5_api_counts{ 
   int fcreate_count;
   int fopen_count;
   int fclose_count;
@@ -39,31 +34,46 @@ struct api_counts{
   int gclose_count;
 };
 
+struct posix_api_counts{
+  int read_count;
+  int write_count;
+};
+
+struct buff_sz{
+  long long read;
+  long long write;
+};
+
 void mpi_finalize_cb();
 void log_atexit();
 
-void make_log();
 void log_MPI_finalize();
 void log_MPI_reduce();
 
-void H5Fcreate_mywrap();
-void H5Fopen_mywrap();
-void H5Fclose_mywrap();
+void H5Fcreate_mywrap(const char *name, unsigned flags, hid_t fcpl_id, hid_t fapl_id);
+void H5Fopen_mywrap(const char *name, unsigned flags, hid_t fapl_id);
+void H5Fclose_mywrap(hid_t file_id);
 
-void H5Acreate2_mywrap();
-void H5Aopen_mywrap();
-void H5Awrite_mywrap();
-void H5Aread_mywrap();
-void H5Aclose_mywrap();
+void H5Acreate2_mywrap(hid_t loc_id, const char *attr_name, hid_t type_id, hid_t space_id,\
+							 hid_t acpl_id, hid_t aapl_id);
+void H5Aopen_mywrap(hid_t obj_id, const char *attr_name, hid_t aapl_id);
+void H5Awrite_mywrap(hid_t attr_id, hid_t mem_type_id, const void *buf);
+void H5Aread_mywrap(hid_t attr_id, hid_t mem_type_id, void *buf);
+void H5Aclose_mywrap(hid_t attr_id);
 
-void H5Dcreate2_mywrap();
-void H5Dopen2_mywrap();
-void H5Dwrite_mywrap();
-void H5Dread_mywrap();
-void H5Dclose_mywrap();
+void H5Dcreate2_mywrap(hid_t loc_id, const char *name, hid_t dtype_id, hid_t space_id, \
+					 hid_t lcpl_id, hid_t dcpl_id, hid_t dapl_id);
+void H5Dopen2_mywrap(hid_t loc_id, const char *name, hid_t dapl_id);
+void H5Dwrite_mywrap(hid_t dataset_id, hid_t mem_type_id, hid_t mem_space_id, \
+		  hid_t file_space_id, hid_t xfer_plist_id, const void * buf);
+void H5Dread_mywrap(hid_t dataset_id, hid_t mem_type_id, hid_t mem_space_id, \
+			hid_t file_space_id, hid_t xfer_plist_id, void * buf);
+void H5Dclose_mywrap(hid_t dataset_id);
 
-void H5Gcreate2_mywrap();
-void H5Gopen2_mywrap();
-void H5Gclose_mywrap();
+void H5Gcreate2_mywrap(hid_t loc_id, const char *name, hid_t lcpl_id, hid_t gcpl_id,\
+								 hid_t gapl_id);
+void H5Gopen2_mywrap(hid_t loc_id, const char * name, hid_t gapl_id);
+void H5Gclose_mywrap(hid_t group_id);
 
 #endif
+
