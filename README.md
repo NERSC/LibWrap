@@ -26,7 +26,7 @@ export CRAYPE_LINK_TYPE=static
 ```
 ** Compiling-
 ```
-Please note that, in case of developing your own wrapper, please make sure you use the same compiler both for gotcha and your wrapper. 
+Please note that, in case of developing your own wrapper, please make sure you use the same compiler both for building gotcha and your wrapper. 
 ```
 
 ** Load module-
