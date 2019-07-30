@@ -26,7 +26,7 @@ def generate_pkg(filename, func_list, lib_list, lib_path, modulename):
         f.write(" "+"-L${"+wrapper_libdir+"}"+" ")
         for lib in lib_list:
                 f.write( "-l{"+lib+"}"+" ")
-        f.write( "-l{wrap"+modulename+"}"+" ")
+        f.write( "-lwrap"+modulename+" ")
 	f.write("\n\n")
         f.write("Libs.private:")
         for function in func_list:

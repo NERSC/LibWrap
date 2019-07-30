@@ -11,6 +11,11 @@ If you want to use scripts in example\_logfile/ then you need
 * [rabbitmq-c](https://github.com/alanxz/rabbitmq-c) 0.9.0 or higher 
 
 
+** Compiling-
+```
+Please note that, in case of developing your own wrapper, please make sure you use the same compiler both for building gotcha and your wrapper.
+```
+
 ** Important Note: By default the environment is static at Cori at this moment. However,  you can also set dynamic or static mode through CRAYPE_LINK_TYPE variable
 
 ** Shared/Dynamic mode-
@@ -24,19 +29,11 @@ You need to write a module to load your package config file. The package config 
 export CRAYPE_LINK_TYPE=static
 
 ```
-** Compiling-
-```
-Please note that, in case of developing your own wrapper, please make sure you use the same compiler both for building gotcha and your wrapper. 
-```
 
 ** Load module-
 ```
 module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
-```
-
-
-*Note*: Use the rabbitmq and openssl version as specified here. As of June 27 2019, the default versiof rabbitmq and openssl on cori are incompatible. You will **not** get any errors while using incompatible versions and might end up spending hours figuring out the issue. 
-  
+```  
 
 ## How to use
 * There are 2 components of this tool
