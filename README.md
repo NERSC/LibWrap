@@ -24,6 +24,11 @@ You need to write a module to load your package config file. The package config 
 export CRAYPE_LINK_TYPE=static
 
 ```
+** Compiling-
+```
+Please note that, in case of developing your own wrapper, please make sure you use the same compiler both for gotcha and your wrapper. 
+```
+
 ** Load module-
 ```
 module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
