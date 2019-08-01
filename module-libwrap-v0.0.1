@@ -1,0 +1,87 @@
+#%Module
+
+set LCcompiler intel
+
+if { [ info exists env(PE_ENV) ] } {
+           set compiler $env(PE_ENV)
+} else {
+           set compiler 0
+}
+
+if  { $compiler == "0" } {
+            set LCcompiler intel
+} elseif { $compiler == "GNU" } {
+            set LCcompiler gnu
+} elseif { $compiler == "CRAY" } {
+            set LCcompiler cray
+} elseif { $compiler == "INTEL" } {
+            set LCcompiler intel
+}
+
+
+
+
+
+set     name        swrap
+set     version     0.0.1
+set     root        /usr/common/software/$name/$version
+
+set     fullname    swrap
+set     externalurl https://github.com/NERSC/gotcha-io
+set     nerscurl    https://www.nersc.gov
+set     maincategory    applications
+set     subcategory "programming"
+set     description "wrapper using gnu linker"
+
+## List conflicting modules here
+
+#conflict openssl/1.0.2h 
+
+#if { [ openssl/1.1.0a  mode unload ] } {
+#        puts stderr "Note: please unload gnu-wrap module first if you already loaded that"
+#}
+
+proc ModulesHelp { } {
+        global description nerscurl externalurl
+        puts stderr "Description - $description"
+        puts stderr "NERSC Docs  - $nerscurl"
+        puts stderr "Other Docs  - $externalurl"
+}
+
+set PREFIX /global/homes/s/swowner/software/cori_modulefiles/gnu-wrap 
+prepend-path GOTCHA /usr/common/software/gotcha/$LCcompiler/1.0
+#prepend-path GOTCHA /usr/common/software/gotcha/1.0
+
+module load openssl/1.1.0a
+
+if { [ info exists ::env(CRAYPE_LINK_TYPE) ] } {
+    if {$env(CRAYPE_LINK_TYPE) == "dynamic"} {
+    
+        remove-path PKG_CONFIG_PATH $PREFIX
+        remove-path PE_PKGCONFIG_LIBS wraphdf5static
+        
+#        prepend-path LD_PRELOAD $PREFIX/mywrapper/libgotchah5.so:$PREFIX/mywrapper/libgotcha.so
+#        prepend-path LD_LIBRARY_PATH /global/common/cori/software/openssl/1.1.0a/hsw/lib
+        prepend-path LD_LIBRARY_PATH /usr/common/software/rabbitmq/0.9.0/lib64
+        prepend-path LD_LIBRARY_PATH /usr/common/software/gotcha/$LCcompiler/1.0/lib64
+#        prepend-path LD_LIBRARY_PATH /usr/common/software/gotcha/1.0/lib64
+        prepend-path LD_LIBRARY_PATH /usr/common/software/jansson/lib
+        prepend-path LD_PRELOAD $PREFIX/libwraphdf5.so:/usr/common/software/gotcha/$LCcompiler/1.0/lib64/libgotcha.so
+  } elseif {$env(CRAYPE_LINK_TYPE) == "static"} {
+      
+        prepend-path PKG_CONFIG_PATH $PREFIX
+        prepend-path PE_PKGCONFIG_LIBS wraphdf5static
+#        static gotcha, openssl, rabbitmq, jansson will be  used by Makefile 
+  }
+
+} else {
+        prepend-path PKG_CONFIG_PATH $PREFIX
+        prepend-path PE_PKGCONFIG_LIBS wraphdf5static
+        
+        prepend-path LD_LIBRARY_PATH /usr/common/software/rabbitmq/0.9.0/lib64
+        prepend-path LD_LIBRARY_PATH /usr/common/software/gotcha/$LCcompiler/1.0/lib64
+#        prepend-path LD_LIBRARY_PATH /usr/common/software/gotcha/1.0/lib64
+        prepend-path LD_LIBRARY_PATH /usr/common/software/jansson/lib
+        prepend-path LD_PRELOAD $PREFIX/libwraphdf5.so:/usr/common/software/gotcha/$LCcompiler/1.0/lib64/libgotcha.so
+}
+
