@@ -60,5 +60,5 @@ This step would create yourmodulename.so and yourmodule.a.
 
 * To locate your data select Default space in MODS -> Go to Discover. Set RoutingKey (this is drop down just below Add a filter on left) to ou-das-\*. Search for your username or "wraplib-posix". Dont forget to select the correct time range on top right.
 
-**Test with module- In module file you can set LD_PRELOAD to link your shared wrapper(i.e., wrapper.so) with the application for shared mode and can also set Package_Config_Path to load the static wrapper (i.e., wrapper.a) for static mode.In Cori you need to have your module in Cori's /usr/commom/software/modulefiles in order to use the module.
+**Test with module- In module file you can set LD_PRELOAD to link your shared wrapper(i.e., wrapper.so) with the application for shared mode and can also set Package_Config_Path to load the static wrapper (i.e., wrapper.a) for static mode.In Cori you need to have your module in Cori's /global/common/cori_cle6/software/modulefiles/ in order to use the module.
 
