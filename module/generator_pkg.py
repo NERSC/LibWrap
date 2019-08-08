@@ -9,9 +9,9 @@ def generate_pkg(filename, func_list, lib_list, lib_path, modulename):
 	
 	f = open(filename, 'w')
 	
-        f.write("wrapper_prefix=../\n")
+        f.write("wrapper_prefix="+lib_path+"\n")
         f.write("exec_prefix=${wrapper_prefix}\n")
-        f.write("wrapper_libdir=../\n")	
+        f.write("wrapper_libdir="+lib_path+"\n")	
 
 	
 		
