@@ -24,6 +24,12 @@ The user is responsible for formatting and writing the logs. We do not recommend
 **PKG_CONFIG** -
 The generator will also generate package config file wrapper-config.pc, where all the libraries(mentioned in STATIC_LIBRARIES in config file, please look at any example config file to get more idea about how to insert path for static libraries) used by the users will be statically linked that will be used by the wrapper. This package config file will be used by the module in case of static linking. Normally in module we set the path to this package config file, so that wrapper can find out which routines to wrap and how to link them with the wrapper statically.
 
+**Wrapping Mechanism**-
+The generator will generate wrapper.c, where all the static and shared wrapping interfaces are given. 
+The static wrapper has two main parts: (a) The actual wrapper function and (b) Function Prototype for real function
+The shared wrapper has three main parts: (a) The actual wrapper (b) The binder with gotcha (c) The handlers for gotcha
+All items mentioned above are commented by the generator in wrapper.c 
+
 **Static linking the wrapper with other libraries** -
 Before executing the MAKEFILE, please execute the static-object-generator.sh script.
 ```

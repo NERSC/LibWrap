@@ -30,9 +30,15 @@ export CRAYPE_LINK_TYPE=static
 
 ```
 
-** Load module-
+** Load Dependencies-
 ```
 module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
+
+OR
+
+export GOTCHA = gotcha_install_path # Point to your gotcha directory OR use the default one in cori: /global/common/cori_cle6/software/gotcha/1.0
+export LD_LIBRARY_PATH=gotcha_shared_lib_path #Point to your gotcha shared lib path or use the one installed in cori with this path:/global/common/cori_cle6/software/gotcha/1.0/lib64
+export LD_LIBRARY_PATH=/global/common/cori_cle6/software/jansson/lib:/global/common/cori_cle6/software/rabbitmq/0.9.0/lib64:$LD_LIBRARY_PATH 
 ```  
 
 ## How to use
