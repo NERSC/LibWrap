@@ -26,9 +26,9 @@ The generator will also generate package config file wrapper-config.pc, where al
 
 **Wrapping Mechanism**-
 The generator will generate wrapper.c, where all the static and shared wrapping interfaces are given. 
-The static wrapper has two main parts: (a) The actual wrapper function and (b) Function Prototype for real function
-The shared wrapper has three main parts: (a) The actual wrapper (b) The binder with gotcha (c) The handlers for gotcha
-All items mentioned above are commented by the generator in wrapper.c 
+The static wrapper has two main parts: (a) The actual wrapper function and (b) Function Prototype for real function.
+The shared wrapper has three main parts: (a) The actual wrapper (b) The binder with gotcha (c) The handlers for gotcha.
+All items mentioned above are marked by the generator tool in wrapper.c. 
 
 **Static linking the wrapper with other libraries** -
 Before executing the MAKEFILE, please execute the static-object-generator.sh script.
