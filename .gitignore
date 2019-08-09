@@ -14,3 +14,5 @@
 !example_usrwrap/posix
 !example_outlog/
 !example_outlog/MODS
+!meta_api_count
+!pytokio_sample
