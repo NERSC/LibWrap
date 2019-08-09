@@ -18,12 +18,12 @@ Please note that, in case of developing your own wrapper, please make sure you u
 
 ** Important Note: By default the environment is static at Cori at this moment. However,  you can also set dynamic or static mode through CRAYPE_LINK_TYPE variable
 
-** Shared/Dynamic mode-
+** Shared/Dynamic build-
 ```
 export CRAYPE_LINK_TYPE=dynamic
 ```
 
-** Static mode-
+** Static build-
 You need to write a module to load your package config file. The package config contains the links for all the statically linked routines and path to the necessary libraries, where those routines aredefined. Please look at example config file in /module to see how to provide paths for third party dependencies. An example of module (i.e.,module-libwrap-01) is given here. Besides, please look at /module to get more idea about how to configure your package_config_file in a module file.
 ```
 export CRAYPE_LINK_TYPE=static
