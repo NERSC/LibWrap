@@ -45,18 +45,26 @@
 
 #include "utils.h"
 
+#define PRINT_ERROR
+
 int die(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
+  #ifdef PRINT_ERROR
   vfprintf(stderr, fmt, ap);
+  #endif 
   va_end(ap);
+  #ifdef PRINT_ERROR
   fprintf(stderr, "\n");
+  #endif 
   return -1;
 }
 
 int die_on_error(int x, char const *context) {
   if (x < 0) {
+    #ifdef PRINT_ERROR
     fprintf(stderr, "%s: %s\n", context, amqp_error_string2(x));
+    #endif 
     return -1;
   }
 }
@@ -67,11 +75,15 @@ int die_on_amqp_error(amqp_rpc_reply_t x, char const *context) {
       return 0;
 
     case AMQP_RESPONSE_NONE:
+      #ifdef PRINT_ERROR
       fprintf(stderr, "%s: missing RPC reply type!\n", context);
+      #endif 
       break;
 
     case AMQP_RESPONSE_LIBRARY_EXCEPTION:
+      #ifdef PRINT_ERROR
       fprintf(stderr, "%s: %s\n", context, amqp_error_string2(x.library_error));
+      #endif 
       break;
 
     case AMQP_RESPONSE_SERVER_EXCEPTION:
@@ -79,21 +91,28 @@ int die_on_amqp_error(amqp_rpc_reply_t x, char const *context) {
         case AMQP_CONNECTION_CLOSE_METHOD: {
           amqp_connection_close_t *m =
               (amqp_connection_close_t *)x.reply.decoded;
+          
+          #ifdef PRINT_ERROR
           fprintf(stderr, "%s: server connection error %uh, message: %.*s\n",
                   context, m->reply_code, (int)m->reply_text.len,
                   (char *)m->reply_text.bytes);
+          #endif 
           break;
         }
         case AMQP_CHANNEL_CLOSE_METHOD: {
           amqp_channel_close_t *m = (amqp_channel_close_t *)x.reply.decoded;
+          #ifdef PRINT_ERROR
           fprintf(stderr, "%s: server channel error %uh, message: %.*s\n",
                   context, m->reply_code, (int)m->reply_text.len,
                   (char *)m->reply_text.bytes);
+          #endif 
           break;
         }
         default:
+          #ifdef PRINT_ERROR
           fprintf(stderr, "%s: unknown server error, method id 0x%08X\n",
                   context, x.reply.id);
+          #endif 
           break;
       }
       break;
@@ -186,4 +205,3 @@ void amqp_dump(void const *buffer, size_t len) {
     printf("%08lX:\n", count);
   }
 }
-
