@@ -1,20 +1,14 @@
 ## Reflector Wrapper library
-* wrapper library that can be used to wrap any function from any library
+* Wrapper library that can be used to wrap any function from any library
 
 ## Dependencies
-* [Gotcha](https://gotcha.readthedocs.io/en/latest/#). Gotcha is an API that provides function wrapping.
 
 If you want to use scripts in example\_logfile/ then you need
 
 * JANSSON 2.12 or higher
-* openssl-1.1.0a or higher 
+* openssl-1.1.0a or higher (default in cori)
 * [rabbitmq-c](https://github.com/alanxz/rabbitmq-c) 0.9.0 or higher 
 
-
-** Compiling-
-```
-Please note that, in case of developing your own wrapper, please make sure you use the same compiler both for building gotcha and your wrapper.
-```
 
 ** Important Note: By default the environment is static at Cori at this moment. However,  you can also set dynamic or static mode through CRAYPE_LINK_TYPE variable
 
@@ -32,12 +26,10 @@ export CRAYPE_LINK_TYPE=static
 
 ** Load Dependencies-
 ```
-module load gnu-wrap ### Helps to load all the dependencies: gotcha,rabbitmq,openssl,jansson
+module load reflector-wrap ### Helps to load all the dependencies: rabbitmq,jansson
 
 OR
 
-export GOTCHA = gotcha_install_path # Point to your gotcha directory OR use the default one in cori: /global/common/cori_cle6/software/gotcha/1.0
-export LD_LIBRARY_PATH=gotcha_shared_lib_path #Point to your gotcha shared lib path or use the one installed in cori with this path:/global/common/cori_cle6/software/gotcha/1.0/lib64
 export LD_LIBRARY_PATH=/global/common/cori_cle6/software/jansson/lib:/global/common/cori_cle6/software/rabbitmq/0.9.0/lib64:$LD_LIBRARY_PATH 
 ```  
 
