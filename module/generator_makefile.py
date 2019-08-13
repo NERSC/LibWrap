@@ -11,13 +11,14 @@ def generate_makefile(fl_nm, modulename, libraries_in_make, includes_in_make, bu
 	str_makefile = "TARGET = libwrap%s.so\nTARGET2 = libwrap%s.a\n" %(modulename,modulename)
 	str_makefile = "%s %s" %(str_makefile, 
 """
+GOTCHA_DIR = ../gotcha_utils
 ALL_OBJECTS_DIR = ALL_OBJECTS
-CC = LD_LIBRARY_PATH=$(GOTCHA)/lib64 cc
-CFLAGS = -fPIC -I$(GOTCHA)/include -L$(GOTCHA)/lib64
-LIBS = -lgotcha
+CC = cc  
+CFLAGS = -fPIC -I$(GOTCHA_DIR)/include 
+
 
 """ + 
-"\nLIBRARIES = -L/$(GOTCHA)/lib64 -L$(GOTCHA)/ %s\nINCLUDES = -I/usr/include -I$(GOTCHA)/include %s\n"\
+"\nLIBRARIES = %s\nINCLUDES = -I/usr/include -I$(GOTCHA_DIR)/include %s\n"\
 				 % (libraries_in_make, includes_in_make)
 + """
 .PHONY: default all clean
@@ -35,6 +36,7 @@ SRC=wrapper.c
 
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 ALL_OBJS := $(patsubst %.c,$(ALL_OBJECTS_DIR)/*.o,$(SRC))
+GOTCHA_OBJS := $(patsubst %.c,$(GOTCHA_DIR)/gotcha_util.o,$(SRC))
 HEADERS = $(wildcard *.h)
 
 %.o: %.c $(HEADERS)
@@ -43,10 +45,10 @@ HEADERS = $(wildcard *.h)
 .PRECIOUS: $(TARGET) $(OBJECTS)
 
 $(TARGET): $(OBJECTS)
-	$(CC) -shared $(OBJECTS)  -o $@ $(INCLUDES) $(LIBRARIES)
+	$(CC) -shared $(OBJECTS) $(GOTCHA_OBJS)  -o $@ $(INCLUDES) $(LIBRARIES)
 
 $(TARGET2): $(OBJECTS)
-	ar rcs $(TARGET2) $(ALL_OBJS) $(OBJECTS)
+	ar rcs $(TARGET2) $(ALL_OBJS) $(GOTCHA_OBJS)  $(OBJECTS)
 
 """)
 	if build=="both":

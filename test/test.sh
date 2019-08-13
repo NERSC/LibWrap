@@ -26,3 +26,6 @@ if test -f "$GOTCHALIB"; then
  echo "Done"
 fi
 
+echo "Testing without gotcha shared lib"
+LD_PRELOAD=$GOTCHAH5 ./h5_rdwt
+echo "Done"

@@ -1,4 +1,5 @@
 #!/bin/bash
+module unload cray-hdf5
 module load cray-hdf5-parallel
 export CRAYPE_LINK_TYPE=dynamic
 echo "============"
@@ -12,8 +13,8 @@ echo "============"
 ./ph5example
 echo "Done"
 echo "============"
-GOTCHAH5=../mywrapper/lwraphdf5.so
-GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
+GOTCHAH5=../mywrapper/libwraphdf5.so
+#GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 if test -f "$GOTCHALIB"; then
  echo "Testing HDF5 apps with GOTCHA"
  echo "============"
@@ -21,4 +22,4 @@ if test -f "$GOTCHALIB"; then
  echo "============"
  echo "Done"
 fi
-
+LD_PRELOAD=$GOTCHAH5 ./ph5example
