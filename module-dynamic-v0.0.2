@@ -1,9 +1,9 @@
 #%Module
-set     name        reflector
+set     name        reflector-hdf5
 set     version     0.0.1
 set     root        /usr/common/software/$name/$version
 
-set     fullname    reflector
+set     fullname    reflector-hdf5
 set     externalurl https://github.com/NERSC/LibWrap
 set     nerscurl    https://www.nersc.gov
 set     maincategory    applications
@@ -38,7 +38,7 @@ if  { $compiler == "0" } {
 
 
 ### For Dynamic compiler selection set dynamic path ###
-set PREFIX /global/common/cori_cle6/software/modulefiles/gnu-wrap/$LCcompiler
+set PREFIX /global/common/cori_cle6/software/modulefiles/reflector-hdf5/$LCcompiler
 
 ### This following PREFIX is for default compiler ###
 #set PREFIX /global/common/cori_cle6/software/modulefiles/gnu-wrap
