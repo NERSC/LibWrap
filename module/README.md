@@ -27,7 +27,7 @@ The generator will also generate package config file wrapper-config.pc, where al
 **Wrapping Mechanism**-
 The generator will generate wrapper.c, where all the static and shared wrapping interfaces are given. 
 The static wrapper has two main parts: (a) The actual wrapper function and (b) Function Prototype for real function.
-The shared wrapper has three main parts: (a) The actual wrapper (b) The binder with gotcha (c) The handlers for gotcha.
+The shared wrapper has three main parts: (a) The actual wrapper (b) The binder with gotcha (c) The handlers for gotcha. [Gotcha](https://gotcha.readthedocs.io/en/latest/#) is an API that provides function wrapping.
 All the parts  mentioned above are marked with necessary comments by the generator tool in wrapper.c. 
 
 **Static linking the wrapper with other libraries** -
