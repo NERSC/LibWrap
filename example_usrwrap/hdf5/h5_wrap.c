@@ -325,7 +325,7 @@ void H5Dcreate2_mywrap(hid_t loc_id, const char *name, hid_t dtype_id, hid_t spa
 
 
 /* Assumes serial */
-void H5Dopen2_mywrap(const char *name, unsigned flags, hid_t dapl_id)
+void H5Dopen2_mywrap(hid_t loc_id, const char *name, hid_t dapl_id)
 {
   loc_serial_api_counts.dopen_count++;
   return ;
