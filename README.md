@@ -54,7 +54,7 @@ make ### Will create the wrapper library
 Please see at  mywrapper/ for your wrapper libraries: yourmodulename.so and yourmodule.a. 
 
 ** Test the wrapper-
-* You should now link the library to your application when executing for example `LD_PRELOAD=path/to/yourmodule.so ./myapp`. See test/ for more examples. For testing you can do in test dir `bash test\_posix.sh`. This should have submitted data in [MODS](https://kb.nersc.gov). 
+* You should now link the library to your application when executing for example `LD_PRELOAD=path/to/yourmodule.so ./myapp`. See test/ for more examples. For testing you can do in test dir `bash test_posix.sh`. This should have submitted data in [MODS](https://kb.nersc.gov). 
 
 * To locate your data select Default space in MODS -> Go to Discover. Set RoutingKey (this is drop down just below Add a filter on left) to ou-das-\*. Search for your username or "wraplib-posix". Dont forget to select the correct time range on top right.
 
