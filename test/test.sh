@@ -4,7 +4,7 @@ export CRAYPE_LINK_TYPE=dynamic
 echo "============"
 echo "Compiling HDF5 apps"
 echo "============"
-#module swap PrgEnv-intel PrgEnv-gnu
+module swap PrgEnv-intel PrgEnv-gnu
 cc -o h5_crtdat h5_crtdat.c
 cc -o h5_rdwt h5_rdwt.c
 echo "Done"
@@ -15,7 +15,7 @@ echo "============"
 ./h5_rdwt
 echo "Done"
 echo "============"
-GOTCHAH5=../mywrapper/libwraphdf5.so
+GOTCHAH5=../mywrapper/libwraphdf5.o
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 #HDF5=${HOME}/LibWrap-Project/LibWrap/dockers/shared/libhdf5_intel.so
 if test -f "$GOTCHALIB"; then
