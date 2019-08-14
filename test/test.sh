@@ -15,7 +15,7 @@ echo "============"
 ./h5_rdwt
 echo "Done"
 echo "============"
-GOTCHAH5=../mywrapper/libwraphdf5.o
+GOTCHAH5=../mywrapper/libwraphdf5.so
 GOTCHALIB=${GOTCHA}/lib64/libgotcha.so
 #HDF5=${HOME}/LibWrap-Project/LibWrap/dockers/shared/libhdf5_intel.so
 if test -f "$GOTCHALIB"; then
