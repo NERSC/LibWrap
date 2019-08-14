@@ -26,7 +26,7 @@ export CRAYPE_LINK_TYPE=static
 
 ** Load Dependencies-
 ```
-module load reflector-wrap ### Helps to load all the dependencies: rabbitmq,jansson
+module load reflector-hdf5 ### Helps to load all the dependencies: rabbitmq,jansson
 
 OR
 
