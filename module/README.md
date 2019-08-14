@@ -19,14 +19,14 @@ This generator will also create Makefile that would compile both user code and g
 
 
 **Write log files**-
-The user is responsible for formatting and writing the logs. We do not recommend doing the logging inside the user wrappers. We recommend doing the logging during the end of application. To that end, tool accepts two functions that can be definer with LOG\_MPI\_FINALIZE and LOG\_ATEXIT. The corresponding functions would be called at MPI\_finalize and program termination respectively. Check example\_usrwrap/posix/posix\_wrap.c:mpi\_finalize\_cb and example\_usrwrap/posix/posix\_wrap.h:log\_atexit in the for example. 
+The user is responsible for formatting and writing the logs. We do not recommend doing the logging inside the user wrappers. We recommend doing the logging during the end of application. To that end, tool accepts two functions that can be defined with LOG\_MPI\_FINALIZE and LOG\_ATEXIT. The corresponding functions would be called at MPI\_finalize and program termination respectively. Check example\_usrwrap/posix/posix\_wrap.c:mpi\_finalize\_cb and example\_usrwrap/posix/posix\_wrap.h:log\_atexit. 
 
 **PKG_CONFIG** -
 The generator will also generate package config file wrapper-config.pc, where all the libraries(mentioned in STATIC_LIBRARIES in config file, please look at any example config file to get more idea about how to insert path for static libraries) used by the users will be statically linked that will be used by the wrapper. This package config file will be used by the module in case of static linking. Normally in module we set the path to this package config file, so that wrapper can find out which routines to wrap and how to link them with the wrapper statically.
 
 **Wrapping Mechanism**-
 The generator will generate wrapper.c, where all the static and shared wrapping interfaces are given. 
-The static wrapper has two main parts: (a) The actual wrapper function and (b) Function Prototype for real function.
+The static wrapper has two main parts: (a) The actual wrapper function and (b) Function Prototype for real function called in actual wrapper function.
 The shared wrapper has three main parts: (a) The actual wrapper (b) The binder with gotcha (c) The handlers for gotcha. [Gotcha](https://gotcha.readthedocs.io/en/latest/#) is an API that provides function wrapping.
 All the parts  mentioned above are marked with necessary comments by the generator tool in wrapper.c. 
 
