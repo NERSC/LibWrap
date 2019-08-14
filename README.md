@@ -41,7 +41,7 @@ Meta wrappers contains the logic to intercept the function calls from the librar
 
 * To get started go module/. You should create a configuration file (e.g., module/hdf5.config) with functions that needs to be wrap and other necessary parameters. More details in module/
 
-* Once a configuration file (e.g.,/module/hdf5.config) has been created run ``python parse.py yourmodulename``. This will create meta wrapper files and Makefile in output specified in the config file. We will assume output is in mywrapper/ 
+* Once a configuration file (see at /module/hdf5.config) has been created run ``python parse.py yourmodulename``. This will create meta wrapper files and Makefile in output specified in the config file. We will assume output is in mywrapper/ 
 
 * Write your user wrappers as the names defined in the config file (example_wrap\rand is simplest example). For this tutorial, you can copy posix_wrap from example_usrwrap/posix to mywrapper/. posix_wrap in the example is submitting logs to MODS. The files for sending data to MODS resides in example_outlog/MODS/. Copy all files to mywrapper/. 
 
