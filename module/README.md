@@ -1,5 +1,5 @@
 ## Configuration File
-The configuration file (e.g., hdf5.config,posix\_rdwt.config) contains keyword (in capital) followed by user parameters new line. Only FUNCTIONS keyword is mandatory. Other are optional.
+The configuration file (e.g., hdf5.config, posix\_rdwt.config) contains keyword (in capital) followed by user parameters new line. Only FUNCTIONS keyword is mandatory. Other are optional.
 ```
 MODE - This should be set with either static/shared/both. Based on the parameter you provide, the wrapper will be built with either static or shared or  both mode.
 FUNCTIONS - The signature of functions to be wrap. One function per line. Also corresponding user wrapper seperated by colon. 
