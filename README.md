@@ -1,6 +1,16 @@
 ## Reflector Wrapper library
 * Wrapper library that can be used to wrap any function from any library
 
+## Quick Overview
+
+Reflector helps in intercepting both dynamic and static functions used in user applications. Reflector operates with the following steps:
+	- A configuration file (see at example\_ready\_hdf5\_wrapper\hdf5.config) needs to be created which contains all the parameters provided by a wrapper author
+	- The Reflector uses the configuration file to generate meta wrappers ( see example\_ready\_hdf5\_wrapper\wrapper.c)
+	- Wrapper author needs to define user wrappers ( see example\_ready\_hdf5\_wrapper\h5\_wrap.c). The meta wrappers (i.e., wrapper functions in example\_ready\_hdf5\_wrapper\wrapper.c) will call the user wrappers.
+	- Wrapper author also needs to provide the logging mechanism (see example\_ready\_hdf5\_wrapper\h5\_wrap.c: mpi\_finalize\_cb and log\_atexit).
+	- The Makefile will generate then the wrapper library.
+	- A ready to use basic hdf5 wrapper (H5Fcreate, H5Fopen, H5Fclose) is provided at example\_ready\_hdf5\_wrapper\mywrapper.
+
 ## Dependencies
 
 If you want to use scripts in example\_logfile/ then you need
@@ -33,11 +43,12 @@ OR
 export LD_LIBRARY_PATH=/global/common/cori_cle6/software/jansson/lib:/global/common/cori_cle6/software/rabbitmq/0.9.0/lib64:$LD_LIBRARY_PATH 
 ```  
 
-## How to use
+## How to generate custom wrapper with Reflector (Step by Step)
 * There are 2 components of this tool
 	- Meta Wrappers
 	- User Wrappers
-Meta wrappers contains the logic to intercept the function calls from the library. We use package.config to do this. Tool will generate this code from user parameters provied in package.config (e.g., hdf5.config). Check Readme in module/ directory. User wrappers is written by users and contains the logic of collecting statistics that the user is interested in extracting. The meta wrappers will call user wrappers. Some example of such user wrappers are in the example_usrwrap. 
+
+Meta wrappers contains the logic to intercept the function calls from the library. We use GOTCHA and GNU-Linker (with package.config) to enable function interception. Tool will generate this wrapper code from user parameters provied in config file (see at module/hdf5.config). Check Readme in module/ directory. User wrappers is written by users and contains the logic of collecting statistics that the user is interested in extracting. The meta wrappers will call user wrappers. Some example of such user wrappers are in the example_usrwrap. 
 
 * To get started go module/. You should create a configuration file (e.g., module/hdf5.config) with functions that needs to be wrap and other necessary parameters. More details in module/
 

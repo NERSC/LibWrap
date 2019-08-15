@@ -1,0 +1,11 @@
+### This package config will be used by module file to help in linking static wrapper
+wrapper_prefix=../mywrapper
+exec_prefix=${wrapper_prefix}
+wrapper_libdir=../mywrapper
+Name:wrapper-config
+Description: the static wrapper
+Version: 1
+
+Libs:-Wl,--wrap=H5Fcreate -Wl,--wrap=H5Fopen -Wl,--wrap=H5Fclose  -L${../mywrapper} -l{hdf5} -lwraphdf5 
+
+Libs.private:-Wl,--wrap=H5Fcreate -Wl,--wrap=H5Fopen -Wl,--wrap=H5Fclose 
