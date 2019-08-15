@@ -1,7 +1,7 @@
 TARGET = libwraphdf5.so
 TARGET2 = libwraphdf5.a
  
-GOTCHA_DIR = ../gotcha_utils
+GOTCHA_DIR = ../../gotcha_utils
 ALL_OBJECTS_DIR = ALL_OBJECTS
 CC = cc  
 CFLAGS = -fPIC -I$(GOTCHA_DIR)/include 

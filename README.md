@@ -5,11 +5,11 @@
 
 * Reflector helps in intercepting both dynamic and static functions used in user applications. Reflector operates with the following steps:
 	- A configuration file (see at example\_ready\_hdf5\_wrapper\hdf5.config) needs to be created which contains all the parameters provided by a wrapper author
-	- The Reflector uses the configuration file to generate meta wrappers ( see example\_ready\_hdf5\_wrapper\wrapper.c)
-	- Wrapper author needs to define user wrappers ( see example\_ready\_hdf5\_wrapper\h5\_wrap.c). The meta wrappers (i.e., wrapper functions in example\_ready\_hdf5\_wrapper\wrapper.c) will call the user wrappers.
-	- Wrapper author also needs to provide the logging mechanism (see example\_ready\_hdf5\_wrapper\h5\_wrap.c: mpi\_finalize\_cb and log\_atexit).
-	- The Makefile will generate then the wrapper library.
-	- A ready to use basic hdf5 wrapper (H5Fcreate, H5Fopen, H5Fclose) is provided at example\_ready\_hdf5\_wrapper\mywrapper.
+	- The Reflector uses the configuration file to generate meta wrappers ( see example\_ready\_hdf5\_wrapper\mywrapper\wrapper.c)
+	- Wrapper author needs to define user wrappers ( see example\_ready\_hdf5\_wrapper\mywrapper\h5\_wrap.c). The meta wrappers (i.e., wrapper functions in example\_ready\_hdf5\_wrapper\wrapper.c) will call the user wrappers.
+	- Wrapper author also needs to provide the logging mechanism (see example\_ready\_hdf5\_wrapper\mywrapper\h5\_wrap.c: mpi\_finalize\_cb and log\_atexit).
+	- The Makefile will generate then the wrapper library (N.B. in case of static linking a special script is needed to be executed before running Makefile, see example\_ready\_hdf5\_wrapper\mywrapper\static-object-generator.sh)
+	- A ready to use basic hdf5 wrapper (H5Fcreate, H5Fopen, H5Fclose) is provided at example\_ready\_hdf5\_wrapper\mywrapper. (please run Makefile to generate wrapper)
 
 ## Dependencies
 
