@@ -3,7 +3,7 @@
 
 ## Quick Overview
 
-* Reflector helps in intercepting both dynamic and static functions used in user applications. Reflector operates with the following steps:
+* Reflector helps in generating custom wrapper to intercept and log both dynamic and static functions used in user applications. Reflector operates with the following steps:
 	- A configuration file (see at example\_ready\_hdf5\_wrapper\hdf5.config) needs to be created which contains all the parameters provided by a wrapper author
 	- The Reflector uses the configuration file to generate meta wrappers ( see example\_ready\_hdf5\_wrapper\mywrapper\wrapper.c)
 	- Wrapper author needs to define user wrappers ( see example\_ready\_hdf5\_wrapper\mywrapper\h5\_wrap.c). The meta wrappers (i.e., wrapper functions in example\_ready\_hdf5\_wrapper\wrapper.c) will call the user wrappers.
